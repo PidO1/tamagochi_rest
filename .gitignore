@@ -27,3 +27,7 @@ hs_err_pid*
 .vscode
 target
 
+.classpath
+.factorypath
+.project
+
