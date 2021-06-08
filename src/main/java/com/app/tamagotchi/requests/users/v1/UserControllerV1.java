@@ -24,7 +24,6 @@ public class UserControllerV1 {
   @GetMapping(path = "/HelloWorld")
   public ResponseEntity helloWorld() {
     try {
-      System.out.println("HIT!!!");
       return new ResponseEntity<String>("hello world!", HttpStatus.OK);
 
     } catch (ApiRequestException e) {
