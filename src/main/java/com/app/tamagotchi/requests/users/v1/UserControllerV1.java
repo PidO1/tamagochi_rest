@@ -32,48 +32,6 @@ public class UserControllerV1 {
     }
   }
 
-
-  @PostMapping(path = "/create", consumes = Constants.APPLICATION_JSON_VALUE, produces = Constants.APPLICATION_JSON_VALUE)
-  public ResponseEntity createUser(@RequestBody Users user) {
-    try {
-      usersService.createUser(user);
-      return new ResponseEntity(HttpStatus.OK);
-
-    } catch (ApiRequestException e) {
-      throw new ApiRequestException(e.getMessage(), e, e.getHttpStatus());
-    }
-  }
-
-  @PostMapping(path = "/update", consumes = Constants.APPLICATION_JSON_VALUE, produces = Constants.APPLICATION_JSON_VALUE)
-  public ResponseEntity updateUser(@RequestBody Users user) {
-    try {
-      usersService.updateUser(user);
-      return new ResponseEntity(HttpStatus.OK);
-    } catch (ApiRequestException e) {
-      throw new ApiRequestException(e.getMessage(), e, e.getHttpStatus());
-    }
-  }
-
-  @PostMapping(path = "/{email}/activate", consumes = Constants.APPLICATION_JSON_VALUE, produces = Constants.APPLICATION_JSON_VALUE)
-  public ResponseEntity activateUser(@PathVariable(name = "email", required = true) String email) {
-    try {
-      usersService.activateUser(email);
-      return new ResponseEntity(HttpStatus.OK);
-    } catch (ApiRequestException e) {
-      throw new ApiRequestException(e.getMessage(), e, e.getHttpStatus());
-    }
-  }
-
-  @PostMapping(path = "/{email}/deactivate", consumes = Constants.APPLICATION_JSON_VALUE, produces = Constants.APPLICATION_JSON_VALUE)
-  public ResponseEntity deActivateUser(@PathVariable(name = "email", required = true) String email) {
-    try {
-      usersService.deActivateUser(email);
-      return new ResponseEntity<Users>(HttpStatus.OK);
-    } catch (ApiRequestException e) {
-      throw new ApiRequestException(e.getMessage(), e, e.getHttpStatus());
-    }
-  }
-
   @GetMapping(value = "/all")
   public ResponseEntity allUsers() {
     List<Users> users =   usersService.allUsers();
