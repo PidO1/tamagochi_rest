@@ -31,5 +31,4 @@ public class UsersService {
     if (user == null) throw new Exception("User not found!");
     return user;
   }
-
 }

@@ -15,5 +15,4 @@ public class TamagotchiApplication extends SpringBootServletInitializer {
   public static void main(String[] args) {
     SpringApplication.run(TamagotchiApplication.class, args);
   }
-
 }

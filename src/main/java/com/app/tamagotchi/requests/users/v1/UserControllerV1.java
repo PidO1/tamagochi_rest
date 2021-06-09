@@ -28,10 +28,10 @@ public class UserControllerV1 {
 
   @GetMapping(value = "/all")
   public ResponseEntity allUsers() {
-    try{
-      List<Users> users =   usersService.allUsers();
+    try {
+      List<Users> users = usersService.allUsers();
       return ControllerUtils.responseOf(HttpStatus.OK, users, "Users found!");
-    }catch (Exception e){
+    } catch (Exception e){
       log.error(e.getMessage(), e);
       return ControllerUtils.responseOf(HttpStatus.NOT_FOUND, "No Users available.");
     }
@@ -60,7 +60,4 @@ public class UserControllerV1 {
       return ControllerUtils.responseOf(HttpStatus.NOT_FOUND, "User not found!");
     }
   }
-
-
-
 }
