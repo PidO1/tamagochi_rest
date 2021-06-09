@@ -1,7 +1,10 @@
 package com.app.tamagotchi.requests.users;
 
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.persistence.*;
 
