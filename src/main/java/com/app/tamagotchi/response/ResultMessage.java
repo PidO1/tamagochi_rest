@@ -1,5 +1,6 @@
 package com.app.tamagotchi.reponse;
 
+import com.app.tamagotchi.enums.Severity;
 import lombok.Data;
 
 @Data
