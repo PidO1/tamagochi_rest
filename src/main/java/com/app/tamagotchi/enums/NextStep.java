@@ -1,14 +1,14 @@
-package com.standardbank.quantumleap.security.services.authenticators.models;
+package com.app.tamagotchi.enums;
 
-public enum Challenge {
-  NEW_PASSWORD_REQUIRED("UPDATE_PASSWORD"),
-  SMS_MFA("OTP"),
+public enum NextStep {
   LOGIN("LOGIN"),
-  FORGOT_PASSWORD_NEW("NEW_PASSWORD");
+  CREATE_PET("CREATE_PET"),
+  CUSTOMIZE_PET("CUSTOMIZE_PET"),
+  REDO("REDO_STEP");
 
   private String nextStep;
 
-  Challenge(String nextStep) {
+  NextStep(String nextStep) {
     this.nextStep = nextStep;
   }
 

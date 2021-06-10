@@ -1,6 +1,8 @@
 package com.app.tamagotchi.requests.users.v1;
 
 
+import com.app.tamagotchi.enums.NextStep;
+import com.app.tamagotchi.interfaces.Secured;
 import com.app.tamagotchi.requests.users.Users;
 import com.app.tamagotchi.requests.users.UsersService;
 import com.app.tamagotchi.utils.ControllerUtils;
@@ -14,50 +16,66 @@ import javax.inject.Inject;
 import java.util.List;
 
 @RestController
-@RequestMapping("tamagotchi/v1/user")
+@RequestMapping("tamagotchi/v1/users")
 @Slf4j
 public class UserControllerV1 {
 
   @Inject
   private UsersService usersService;
+  private final String mediaType = MediaType.APPLICATION_JSON_VALUE;
 
   @GetMapping(path = "/HelloWorld")
+  @Secured(secureStatus = Secured.SecureStatus.PUBLIC)
   public ResponseEntity helloWorld() {
       return ControllerUtils.responseOf(HttpStatus.OK, "Hello World!");
   }
 
-  @GetMapping(value = "/all")
+  @PostMapping(value = "/", consumes = this.mediaType, produces = this.mediaType)
+  @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
+  public ResponseEntity createUser(@RequestBody Users user) {
+    try{
+      usersService.createUser(user);
+      return ControllerUtils.responseOf(HttpStatus.OK, "User registered on the system!", NextStep.LOGIN.getNextStep());
+    }catch (Exception e){
+      log.error(e.getMessage(), e);
+      return ControllerUtils.responseOf(HttpStatus.EXPECTATION_FAILED, e.getMessage(), NextStep.REDO.getNextStep());
+    }
+  }
+
+  @PutMapping(value = "/", consumes = this.mediaType, produces = this.mediaType)
+  @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
+  public ResponseEntity updateUser(@RequestBody Users user) {
+    try{
+      Users updatedUser = usersService.updateUser(user);
+      return ControllerUtils.responseOf(HttpStatus.OK, updatedUser,"User updated!");
+    }catch (Exception e){
+      log.error(e.getMessage(), e);
+      return ControllerUtils.responseOf(HttpStatus.EXPECTATION_FAILED, e.getMessage(), NextStep.REDO.getNextStep());
+    }
+  }
+
+  @GetMapping(value = "/")
+  @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
   public ResponseEntity allUsers() {
     try{
-      List<Users> users =   usersService.allUsers();
+      List<Users> users =  usersService.allUsers();
       return ControllerUtils.responseOf(HttpStatus.OK, users, "Users found!");
     }catch (Exception e){
       log.error(e.getMessage(), e);
-      return ControllerUtils.responseOf(HttpStatus.NOT_FOUND, "No Users available.");
+      return ControllerUtils.responseOf(HttpStatus.NOT_FOUND, "No Users available.", NextStep.REDO.getNextStep());
     }
   }
 
-  @GetMapping(value = "/id/{id}")
-  public ResponseEntity findUserById(
-      @PathVariable(name = "id", required = true) Long userId) {
+  @GetMapping(value = "/{email}", consumes = this.mediaType, produces = this.mediaType)
+  @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
+  public ResponseEntity findUserById(@PathVariable(name = "email", required = true) String email) {
     try {
-      Users users = usersService.findUserById(userId);
+      Users users = usersService.findUserByEmail(email);
+      if (users == null) throw new Exception("User not found!");
       return ControllerUtils.responseOf(HttpStatus.OK, users, "User found!");
     } catch (Exception e) {
       log.error(e.getMessage(), e);
-      return ControllerUtils.responseOf(HttpStatus.NOT_FOUND, "User not found!");
-    }
-  }
-
-  @GetMapping( value = "/email", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-  @ResponseBody
-  public ResponseEntity findUserById(@RequestBody Users user) {
-    try {
-      Users users = (Users) usersService.findUserByEmail(user.getEmail());
-      return ControllerUtils.responseOf(HttpStatus.OK, users, "User found!");
-    } catch (Exception e) {
-      log.error(e.getMessage(), e);
-      return ControllerUtils.responseOf(HttpStatus.NOT_FOUND, "User not found!");
+      return ControllerUtils.responseOf(HttpStatus.NOT_FOUND, "User not found!", NextStep.REDO.getNextStep());
     }
   }
 

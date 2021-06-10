@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
 @EnableTransactionManagement
+@EnableJpaRepositories
 public class TamagotchiApplication extends SpringBootServletInitializer {
 
   public static void main(String[] args) {
