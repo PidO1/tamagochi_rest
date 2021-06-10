@@ -1,8 +1,8 @@
 package com.app.tamagotchi.requests.pets.v1;
 
 
-import com.app.tamagotchi.requests.pets.Pets;
-import com.app.tamagotchi.requests.pets.PetsService;
+import com.app.tamagotchi.requests.pets.Pet;
+import com.app.tamagotchi.requests.pets.PetService;
 import com.app.tamagotchi.utils.ControllerUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -15,36 +15,38 @@ import java.util.List;
 @RestController
 @RequestMapping("tamagotchi/v1/pets")
 @Slf4j
-public class PetsControllerV1 {
-
+public class PetsControllerV1 
+{
   @Inject
-  private PetsService petsService;
+  private PetService petService;
 
-  @GetMapping(path = "/HelloWorld")
-  public ResponseEntity helloWorld() {
-      return ControllerUtils.responseOf(HttpStatus.OK, "Hello World!");
-  }
-
-  @GetMapping(value = "/all")
-  public ResponseEntity allPets() {
-    try {
-      List<Pets> pets = petsService.allPets();
-      return ControllerUtils.responseOf(HttpStatus.OK, pets, "Pets found!");
-    } catch (Exception e){
+  @GetMapping(value = "/")
+  public ResponseEntity allPets() 
+  {
+    try 
+    {
+      List<Pet> pets = petService.allPets();
+      return ControllerUtils.responseOf(HttpStatus.OK, pets, "Pets loaded");
+    } 
+    catch (Exception e)
+    {
       log.error(e.getMessage(), e);
-      return ControllerUtils.responseOf(HttpStatus.NOT_FOUND, "No Pets available.");
+      return ControllerUtils.responseOf(HttpStatus.NOT_FOUND, "Unable to load pets");
     }
   }
 
-  @GetMapping(value = "/id/{id}")
-  public ResponseEntity findPetById(
-      @PathVariable(name = "id", required = true) Long petId) {
-    try {
-      Pets pets = petsService.findPetById(petId);
-      return ControllerUtils.responseOf(HttpStatus.OK, pets, "Pet found!");
-    } catch (Exception e) {
+  @GetMapping(value = "/{id}")
+  public ResponseEntity findPetById(@PathVariable(name = "id", required = true) Long petId) 
+  {
+    try 
+    {
+      Pet pet = petService.findPetById(petId);
+      return ControllerUtils.responseOf(HttpStatus.OK, pet, "Pet " + petId.toString() + " found");
+    } 
+    catch (Exception e) 
+    {
       log.error(e.getMessage(), e);
-      return ControllerUtils.responseOf(HttpStatus.NOT_FOUND, "Pet not found!");
+      return ControllerUtils.responseOf(HttpStatus.NOT_FOUND, "Pet " + petId.toString() + " not found");
     }
   }
 }
