@@ -30,7 +30,7 @@ public class UserControllerV1 {
       return ControllerUtils.responseOf(HttpStatus.OK, "Hello World!");
   }
 
-  @PostMapping(value = "/", consumes = this.mediaType, produces = this.mediaType)
+  @PostMapping(value = "/", consumes = mediaType, produces = mediaType)
   @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
   public ResponseEntity createUser(@RequestBody Users user) {
     try{
@@ -42,7 +42,7 @@ public class UserControllerV1 {
     }
   }
 
-  @PutMapping(value = "/", consumes = this.mediaType, produces = this.mediaType)
+  @PutMapping(value = "/", consumes = mediaType, produces = mediaType)
   @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
   public ResponseEntity updateUser(@RequestBody Users user) {
     try{
@@ -66,7 +66,7 @@ public class UserControllerV1 {
     }
   }
 
-  @GetMapping(value = "/{email}", consumes = this.mediaType, produces = this.mediaType)
+  @GetMapping(value = "/{email}", consumes = mediaType, produces = mediaType)
   @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
   public ResponseEntity findUserById(@PathVariable(name = "email", required = true) String email) {
     try {
