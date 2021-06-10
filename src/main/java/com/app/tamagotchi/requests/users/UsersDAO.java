@@ -9,14 +9,14 @@ import org.springframework.stereotype.Repository;
 import javax.transaction.Transactional;
 
 @Repository
-public interface UsersDAO extends JpaRepository<Users, Long> {
+public interface UsersDAO extends JpaRepository<User, Long> {
 
   @Modifying
   @Transactional
-  @Query("UPDATE Users SET firstName = :firstName, lastName = :lastName, email = :email WHERE id = :id")
+  @Query("UPDATE User SET firstName = :firstName, lastName = :lastName, email = :email WHERE id = :id")
   void updateUser(@Param("firstName") String firstName, @Param("lastName") String lastName, @Param("email") String email, @Param("id")Long id);
 
-  Users findUsersById(Long id);
+  User findUsersById(Long id);
 
-  Users findUserByEmail(String email);
+  User findUserByEmail(String email);
 }
