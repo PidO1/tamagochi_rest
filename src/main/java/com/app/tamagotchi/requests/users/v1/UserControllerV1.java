@@ -3,8 +3,9 @@ package com.app.tamagotchi.requests.users.v1;
 
 import com.app.tamagotchi.enums.NextStep;
 import com.app.tamagotchi.interfaces.Secured;
-import com.app.tamagotchi.requests.users.Users;
+import com.app.tamagotchi.requests.users.User;
 import com.app.tamagotchi.requests.users.UsersService;
+import com.app.tamagotchi.response.HttpException;
 import com.app.tamagotchi.utils.ControllerUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -32,37 +33,37 @@ public class UserControllerV1 {
 
   @PostMapping(value = "/", consumes = mediaType, produces = mediaType)
   @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
-  public ResponseEntity createUser(@RequestBody Users user) {
+  public ResponseEntity createUser(@RequestBody User user) {
     try{
-      usersService.createUser(user);
-      return ControllerUtils.responseOf(HttpStatus.OK, "User registered on the system!", NextStep.LOGIN.getNextStep());
-    }catch (Exception e){
+      User createUser = usersService.createUser(user);
+      return ControllerUtils.responseOf(HttpStatus.OK, createUser, "User registered on the system!",  NextStep.LOGIN.getNextStep());
+    }catch (HttpException e){
       log.error(e.getMessage(), e);
-      return ControllerUtils.responseOf(HttpStatus.EXPECTATION_FAILED, e.getMessage(), NextStep.REDO.getNextStep());
+      return ControllerUtils.responseOf(e.getHttpStatus(), e.getErrorMessage(), NextStep.REDO.getNextStep());
     }
   }
 
   @PutMapping(value = "/", consumes = mediaType, produces = mediaType)
   @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
-  public ResponseEntity updateUser(@RequestBody Users user) {
+  public ResponseEntity updateUser(@RequestBody User user) {
     try{
-      Users updatedUser = usersService.updateUser(user);
+      User updatedUser = usersService.updateUser(user);
       return ControllerUtils.responseOf(HttpStatus.OK, updatedUser,"User updated!");
-    }catch (Exception e){
+    }catch (HttpException e){
       log.error(e.getMessage(), e);
-      return ControllerUtils.responseOf(HttpStatus.EXPECTATION_FAILED, e.getMessage(), NextStep.REDO.getNextStep());
+      return ControllerUtils.responseOf(e.getHttpStatus(), e.getErrorMessage(), NextStep.REDO.getNextStep());
     }
   }
 
-  @GetMapping(value = "/")
+  @GetMapping(value = "/", produces = mediaType)
   @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
   public ResponseEntity allUsers() {
     try{
-      List<Users> users =  usersService.allUsers();
+      List<User> users =  usersService.allUsers();
       return ControllerUtils.responseOf(HttpStatus.OK, users, "Users found!");
-    }catch (Exception e){
+    }catch (HttpException e){
       log.error(e.getMessage(), e);
-      return ControllerUtils.responseOf(HttpStatus.NOT_FOUND, "No Users available.", NextStep.REDO.getNextStep());
+      return ControllerUtils.responseOf(e.getHttpStatus(), e.getErrorMessage(), NextStep.REDO.getNextStep());
     }
   }
 
@@ -70,12 +71,12 @@ public class UserControllerV1 {
   @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
   public ResponseEntity findUserById(@PathVariable(name = "email", required = true) String email) {
     try {
-      Users users = usersService.findUserByEmail(email);
-      if (users == null) throw new Exception("User not found!");
+      User users = usersService.findUserByEmail(email);
+      if (users == null) throw new HttpException(HttpStatus.NOT_FOUND, "User not found!");
       return ControllerUtils.responseOf(HttpStatus.OK, users, "User found!");
-    } catch (Exception e) {
+    } catch (HttpException e) {
       log.error(e.getMessage(), e);
-      return ControllerUtils.responseOf(HttpStatus.NOT_FOUND, "User not found!", NextStep.REDO.getNextStep());
+      return ControllerUtils.responseOf(e.getHttpStatus(), e.getErrorMessage(), NextStep.REDO.getNextStep());
     }
   }
 }
