@@ -78,7 +78,4 @@ public class UserControllerV1 {
       return ControllerUtils.responseOf(HttpStatus.NOT_FOUND, "User not found!", NextStep.REDO.getNextStep());
     }
   }
-
-
-
 }

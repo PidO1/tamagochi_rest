@@ -66,5 +66,4 @@ public class UsersService {
       throw new Exception(e);
     }
   }
-
 }
