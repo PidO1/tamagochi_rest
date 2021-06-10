@@ -49,4 +49,19 @@ public class PetsControllerV1
       return ControllerUtils.responseOf(HttpStatus.NOT_FOUND, "Pet " + petId.toString() + " not found");
     }
   }
+
+  @PostMapping(value = "/")
+  public ResponseEntity createPet(@RequestBody Pet pet)
+  {
+    try 
+    {
+      Pet createdPet = petService.saveAndFlush(pet);
+      return ControllerUtils.responseOf(HttpStatus.CREATED, createdPet, "Pet created");
+    }
+    catch (Exception e) 
+    {
+      log.error(e.getMessage(), e);
+      return ControllerUtils.responseOf(HttpStatus.INTERNAL_SERVER_ERROR, "Pet could not be created");
+    }
+  }
 }

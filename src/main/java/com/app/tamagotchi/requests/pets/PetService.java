@@ -22,7 +22,15 @@ public class PetService
   public Pet findPetById(Long petId) 
   {
     Pet pet = dao.findPetById(petId);
-    if (pet == null) throw new Exception("Pet not found!");
+    if (pet == null) throw new Exception("Pet " + petId.toString() + " not found");
     return pet;
+  }
+
+  @SneakyThrows
+  public Pet saveAndFlush(Pet pet)
+  {
+    Pet createdPet = dao.saveAndFlush(pet);
+    if (createdPet == null) throw new Exception("Pet could not be created");
+    return createdPet;
   }
 }

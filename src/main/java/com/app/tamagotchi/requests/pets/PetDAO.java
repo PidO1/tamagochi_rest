@@ -8,4 +8,6 @@ import org.springframework.stereotype.Service;
 public interface PetDAO extends JpaRepository<Pet, Long> 
 {
   Pet findPetById(Long id);
+
+  Pet saveAndFlush(Pet pet);
 }
