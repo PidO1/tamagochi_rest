@@ -1,9 +1,9 @@
 package com.app.tamagotchi.utils;
 
 
-import com.app.tamagotchi.reponse.ApiResult;
-import com.app.tamagotchi.reponse.ResultMessage;
-import com.app.tamagotchi.reponse.Severity;
+import com.app.tamagotchi.response.ApiResult;
+import com.app.tamagotchi.response.ResultMessage;
+import com.app.tamagotchi.response.Severity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 

@@ -1,4 +1,4 @@
-package com.app.tamagotchi.reponse;
+package com.app.tamagotchi.response;
 
 import lombok.Data;
 
