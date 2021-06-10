@@ -1,6 +1,6 @@
-package com.app.tamagotchi.response;
+package com.app.tamagotchi.interfaces;
 
-import lombok.Data;
+import com.app.tamagotchi.response.ResultMessage;
 
 import java.util.List;
 

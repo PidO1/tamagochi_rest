@@ -1,10 +1,7 @@
 package com.app.tamagotchi.requests.users;
 
 
-import com.fasterxml.jackson.annotation.JsonAlias;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.persistence.*;
 
@@ -26,4 +23,19 @@ public class Users {
 
   @Column(name = "email")
   private String email;
+
+  public Users cloneUserDetails(Users user) {
+    return new Users(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail());
+  }
+
+  public Users(Long id, String firstName, String lastName, String email) {
+    this.id = id;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.email = email;
+  }
+
+  public Users() {
+    super();
+  }
 }

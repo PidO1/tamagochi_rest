@@ -4,7 +4,7 @@ package com.app.tamagotchi.requests.pets.v1;
 import com.app.tamagotchi.requests.pets.Pet;
 import com.app.tamagotchi.requests.pets.PetsService;
 import com.app.tamagotchi.utils.ControllerUtils;
-import com.app.tamagotchi.response.Severity;
+import com.app.tamagotchi.enums.Severity;
 import com.app.tamagotchi.response.HttpException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

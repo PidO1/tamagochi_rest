@@ -1,4 +1,4 @@
-package com.app.tamagotchi.response;
+package com.app.tamagotchi.enums;
 
 public enum Severity {
   INFO,
