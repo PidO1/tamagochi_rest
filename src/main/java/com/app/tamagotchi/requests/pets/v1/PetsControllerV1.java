@@ -4,13 +4,14 @@ package com.app.tamagotchi.requests.pets.v1;
 import com.app.tamagotchi.interfaces.Secured;
 import com.app.tamagotchi.requests.pets.Pet;
 import com.app.tamagotchi.requests.pets.PetsService;
-import com.app.tamagotchi.utils.ControllerUtils;
 import com.app.tamagotchi.response.HttpException;
+import com.app.tamagotchi.utils.ControllerUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import javax.inject.Inject;
 import java.util.List;
 

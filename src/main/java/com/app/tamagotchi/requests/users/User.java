@@ -1,6 +1,7 @@
 package com.app.tamagotchi.requests.users;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -24,18 +25,12 @@ public class User {
   @Column(name = "email")
   private String email;
 
-  public User cloneUserDetails(User user) {
-    return new User(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail());
-  }
+  @Transient
+  @JsonProperty("password")
+  private String password;
 
-  public User(Long id, String firstName, String lastName, String email) {
-    this.id = id;
-    this.firstName = firstName;
-    this.lastName = lastName;
-    this.email = email;
-  }
+  @Transient
+  @JsonProperty("access_token")
+  private String accessToken;
 
-  public User() {
-    super();
-  }
 }

@@ -1,13 +1,11 @@
 package com.app.tamagotchi.requests.pets;
 
 
-import java.util.Date;
-import com.fasterxml.jackson.annotation.JsonAlias;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
-import org.springframework.web.bind.annotation.RequestMapping;
-import javax.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
+
+import javax.persistence.*;
+import java.util.Date;
 
 
 @Entity
