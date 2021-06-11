@@ -6,10 +6,10 @@ import com.app.tamagotchi.interfaces.Secured;
 import com.app.tamagotchi.requests.users.User;
 import com.app.tamagotchi.requests.users.UsersService;
 import com.app.tamagotchi.response.HttpException;
+import com.app.tamagotchi.utils.Constants;
 import com.app.tamagotchi.utils.ControllerUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +23,6 @@ public class UserControllerV1 {
 
   @Inject
   private UsersService usersService;
-  private final String mediaType = MediaType.APPLICATION_JSON_VALUE;
 
   @GetMapping(path = "/HelloWorld")
   @Secured(secureStatus = Secured.SecureStatus.PUBLIC)
@@ -31,7 +30,7 @@ public class UserControllerV1 {
       return ControllerUtils.responseOf(HttpStatus.OK, "Hello World!");
   }
 
-  @PostMapping(value = "/", consumes = mediaType, produces = mediaType)
+  @PostMapping(value = "/", consumes = Constants.JSON_VALUE, produces = Constants.JSON_VALUE)
   @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
   public ResponseEntity createUser(@RequestBody User user) {
     try{
@@ -43,7 +42,7 @@ public class UserControllerV1 {
     }
   }
 
-  @PutMapping(value = "/", consumes = mediaType, produces = mediaType)
+  @PutMapping(value = "/", consumes = Constants.JSON_VALUE, produces = Constants.JSON_VALUE)
   @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
   public ResponseEntity updateUser(@RequestBody User user) {
     try{
@@ -55,7 +54,7 @@ public class UserControllerV1 {
     }
   }
 
-  @GetMapping(value = "/", produces = mediaType)
+  @GetMapping(value = "/", produces = Constants.JSON_VALUE)
   @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
   public ResponseEntity allUsers() {
     try{
@@ -67,7 +66,7 @@ public class UserControllerV1 {
     }
   }
 
-  @GetMapping(value = "/{email}", consumes = mediaType, produces = mediaType)
+  @GetMapping(value = "/{email}", consumes = Constants.JSON_VALUE, produces = Constants.JSON_VALUE)
   @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
   public ResponseEntity findUserById(@PathVariable(name = "email", required = true) String email) {
     try {
