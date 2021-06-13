@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.lang.Exception;
+import io.sentry.Sentry;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -27,7 +29,9 @@ public class UserControllerV1 {
       return new ResponseEntity<String>("hello world!", HttpStatus.OK);
 
     } catch (ApiRequestException e) {
+      Sentry.captureException(e);
       throw new ApiRequestException(e.getMessage(), e, e.getHttpStatus());
+      
     }
   }
 
@@ -44,7 +48,9 @@ public class UserControllerV1 {
       Users users = (Users) usersService.findUserById(userId);
       return new ResponseEntity<Users>(users, HttpStatus.OK);
     } catch (ApiRequestException e) {
+      Sentry.captureException(e);
       throw new ApiRequestException(e.getMessage(), e, e.getHttpStatus());
+      
     }
   }
 
@@ -55,7 +61,9 @@ public class UserControllerV1 {
       Users users = (Users) usersService.findUserByEmail(email);
       return new ResponseEntity<Users>(users, HttpStatus.OK);
     } catch (ApiRequestException e) {
+      Sentry.captureException(e);
       throw new ApiRequestException(e.getMessage(), e, e.getHttpStatus());
+      
     }
   }
 
