@@ -25,9 +25,8 @@ public class PetsControllerV1
 
   @Inject
   private PetsService petService;
-  private final String JSONObject = MediaType.APPLICATION_JSON_VALUE;
 
-  @GetMapping(value = "/", produces = JSONObject)
+  @GetMapping(value = "/")
   @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
   public ResponseEntity getAllPets() 
   {
@@ -43,7 +42,7 @@ public class PetsControllerV1
     }
   }
 
-  @GetMapping(value = "/{id}", produces = JSONObject)
+  @GetMapping(value = "/{id}")
   @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
   public ResponseEntity getPetById(@PathVariable(name = "id", required = true) Long petId) 
   {
@@ -59,7 +58,7 @@ public class PetsControllerV1
     }
   }
 
-  @PostMapping(value = "/", consumes = JSONObject, produces = JSONObject)
+  @PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
   @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
   public ResponseEntity createPet(@RequestBody Pet pet)
   {
@@ -75,7 +74,7 @@ public class PetsControllerV1
     }
   }
 
-  @PutMapping(value = "/{id}", consumes = JSONObject, produces = JSONObject)
+  @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
   @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
   public ResponseEntity changePetById(@PathVariable(name = "id", required = true) Long petId, @RequestBody Pet pet) 
   {
@@ -91,7 +90,7 @@ public class PetsControllerV1
     }
   }
 
-  @DeleteMapping(value = "/{id}", produces = JSONObject)
+  @DeleteMapping(value = "/{id}")
   @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
   public ResponseEntity changePetById(@PathVariable(name = "id", required = true) Long petId) 
   {
@@ -99,6 +98,38 @@ public class PetsControllerV1
     {
       petService.deletePetById(petId);
       return ControllerUtils.responseOf(HttpStatus.OK, "Pet " + petId.toString() + " deleted");
+    } 
+    catch (HttpException e)
+    {
+      log.error(e.getErrorMessage());
+      return ControllerUtils.responseOf(e.getHttpStatus(), e.getErrorMessage());
+    }
+  }
+
+  @PutMapping(value = "/{id}/play")
+  @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
+  public ResponseEntity playWithPetById(@PathVariable(name = "id", required = true) Long petId) 
+  {
+    try 
+    {
+      petService.playWithPetById(petId);
+      return ControllerUtils.responseOf(HttpStatus.OK, "Played with Pet " + petId.toString());
+    } 
+    catch (HttpException e)
+    {
+      log.error(e.getErrorMessage());
+      return ControllerUtils.responseOf(e.getHttpStatus(), e.getErrorMessage());
+    }
+  }
+
+  @PutMapping(value = "/{id}/feed")
+  @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
+  public ResponseEntity feedPetById(@PathVariable(name = "id", required = true) Long petId) 
+  {
+    try 
+    {
+      petService.feedPetById(petId);
+      return ControllerUtils.responseOf(HttpStatus.OK, "Fed Pet " + petId.toString());
     } 
     catch (HttpException e)
     {

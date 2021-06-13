@@ -1,9 +1,9 @@
 package com.app.tamagotchi.requests.pets;
 
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import javax.inject.Inject;
+import java.util.Date;
 import java.util.List;
 import com.app.tamagotchi.response.HttpException;
 import org.springframework.http.HttpStatus;
@@ -64,5 +64,25 @@ public class PetsService
     pet.setDeleted(true);
     pet = dao.saveAndFlush(pet);
     if (pet == null) throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, "Pet " + petId.toString() + " could not be deleted");
+  }
+
+  public void playWithPetById(Long petId) throws HttpException
+  {
+    Pet pet = dao.findPetById(petId);
+    if (pet == null || pet.getDeleted()) throw new HttpException(HttpStatus.NOT_FOUND, "Pet " + petId.toString() + " not found");
+
+    pet.setLastPlayed(new Date());
+    pet = dao.saveAndFlush(pet);
+    if (pet == null) throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, "Pet " + petId.toString() + " could not be changed");
+  }
+
+  public void feedPetById(Long petId) throws HttpException
+  {
+    Pet pet = dao.findPetById(petId);
+    if (pet == null || pet.getDeleted()) throw new HttpException(HttpStatus.NOT_FOUND, "Pet " + petId.toString() + " not found");
+
+    pet.setLastFed(new Date());
+    pet = dao.saveAndFlush(pet);
+    if (pet == null) throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, "Pet " + petId.toString() + " could not be changed");
   }
 }
