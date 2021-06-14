@@ -69,6 +69,8 @@ public class AuthController {
 
   public void verifyToken(String token) throws HttpException {
     try {
+
+      //TODO: Decrypt JWT
       OkHttpClient client = new OkHttpClient().newBuilder()
               .build();
       Request request = new Request.Builder()
