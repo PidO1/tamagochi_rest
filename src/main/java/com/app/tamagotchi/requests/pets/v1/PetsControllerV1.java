@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
 import java.util.List;
-
+import io.sentry.Sentry;
 
 
 @RestController
@@ -40,7 +40,7 @@ public class PetsControllerV1
     } 
     catch (HttpException e)
     {
-      // Sentry.captureException(e);
+      Sentry.captureException(e);
       log.error(e.getErrorMessage());
       return ControllerUtils.responseOf(e.getHttpStatus(), e.getErrorMessage());
     }
@@ -57,7 +57,7 @@ public class PetsControllerV1
     } 
     catch (HttpException e)
     {
-      // Sentry.captureException(e);
+      Sentry.captureException(e);
       log.error(e.getErrorMessage());
       return ControllerUtils.responseOf(e.getHttpStatus(), e.getErrorMessage());
     }
@@ -74,7 +74,7 @@ public class PetsControllerV1
     }
     catch (HttpException e)
     {
-      // Sentry.captureException(e);
+      Sentry.captureException(e);
       log.error(e.getErrorMessage());
       return ControllerUtils.responseOf(e.getHttpStatus(), e.getErrorMessage());
     }
@@ -91,7 +91,7 @@ public class PetsControllerV1
     } 
     catch (HttpException e)
     {
-      // Sentry.captureException(e);
+      Sentry.captureException(e);
       log.error(e.getErrorMessage());
       return ControllerUtils.responseOf(e.getHttpStatus(), e.getErrorMessage());
     }
@@ -108,7 +108,7 @@ public class PetsControllerV1
     } 
     catch (HttpException e)
     {
-      // Sentry.captureException(e);
+      Sentry.captureException(e);
       log.error(e.getErrorMessage());
       return ControllerUtils.responseOf(e.getHttpStatus(), e.getErrorMessage());
     }

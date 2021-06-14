@@ -22,7 +22,7 @@ public class TamagotchiApplication extends SpringBootServletInitializer {
     
     try {
       SpringApplication.run(TamagotchiApplication.class, args);
-  throw new Exception("This is a test.");
+  
 } catch (Exception e) {
   Sentry.captureException(e);
 }
