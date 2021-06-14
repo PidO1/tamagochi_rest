@@ -14,8 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.inject.Inject;
 import java.util.List;
-import java.lang.Exception;
-import io.sentry.Sentry;
+
 
 
 @RestController
