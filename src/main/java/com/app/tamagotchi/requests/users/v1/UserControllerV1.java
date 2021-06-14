@@ -14,13 +14,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.lang.Exception;
-import io.sentry.Sentry;
+
 
 import javax.inject.Inject;
 import java.util.List;
-import java.lang.Exception;
-import io.sentry.Sentry;
 
 @RestController
 @RequestMapping("tamagotchi/v1/users")
@@ -44,7 +41,7 @@ public class UserControllerV1 extends AuthController{
       return ControllerUtils.responseOf(HttpStatus.OK, createUser, "User registered on the system!",  NextStep.LOGIN.getNextStep());
     }catch (HttpException e){
      log.error(e.getErrorMessage(), e);
-     Sentry.captureException(e);
+    //  Sentry.captureException(e);
       return ControllerUtils.responseOf(e.getHttpStatus(), e.getErrorMessage(), NextStep.REDO.getNextStep());
     }
   }
@@ -56,7 +53,7 @@ public class UserControllerV1 extends AuthController{
       AccessToken accessToken = usersService.login(user);
       return ControllerUtils.responseOf(HttpStatus.OK, accessToken, "Login successful",  NextStep.CREATE_PET.getNextStep());
     }catch (HttpException e){
-      Sentry.captureException(e);
+      // Sentry.captureException(e);
       log.error(e.getErrorMessage(), e);
       return ControllerUtils.responseOf(e.getHttpStatus(), e.getErrorMessage(), NextStep.REDO.getNextStep());
     }
@@ -70,7 +67,7 @@ public class UserControllerV1 extends AuthController{
       User updatedUser = usersService.updateUser(user);
       return ControllerUtils.responseOf(HttpStatus.OK, updatedUser,"User updated!");
     }catch (HttpException e){
-      Sentry.captureException(e);
+      // Sentry.captureException(e);
      log.error(e.getErrorMessage(), e);
       return ControllerUtils.responseOf(e.getHttpStatus(), e.getErrorMessage(), NextStep.REDO.getNextStep());
     }
@@ -85,7 +82,7 @@ public class UserControllerV1 extends AuthController{
       return ControllerUtils.responseOf(HttpStatus.OK, users, "Users found!");
     }catch (HttpException e){
      log.error(e.getErrorMessage(), e);
-     Sentry.captureException(e);
+    //  Sentry.captureException(e);
       return ControllerUtils.responseOf(e.getHttpStatus(), e.getErrorMessage(), NextStep.REDO.getNextStep());
     }
   }
@@ -100,7 +97,7 @@ public class UserControllerV1 extends AuthController{
       if (users == null) throw new HttpException(HttpStatus.NOT_FOUND, "User not found!");
       return ControllerUtils.responseOf(HttpStatus.OK, users, "User found!");
     } catch (HttpException e) {
-      Sentry.captureException(e);
+      // Sentry.captureException(e);
      log.error(e.getErrorMessage(), e);
       return ControllerUtils.responseOf(e.getHttpStatus(), e.getErrorMessage(), NextStep.REDO.getNextStep());
     }

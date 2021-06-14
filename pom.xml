@@ -87,11 +87,11 @@
             <version>0.7.0</version>
         </dependency>
 
-        <dependency>
+        <!-- <dependency>
             <groupId>io.sentry</groupId>
             <artifactId>sentry-spring-boot-starter</artifactId>
             <version>5.0.1</version>
-        </dependency>
+        </dependency> -->
 
     </dependencies>
 
