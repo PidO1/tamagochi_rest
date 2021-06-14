@@ -36,7 +36,11 @@ public class PetsService
 
   public Pet createPet(Pet pet) throws HttpException
   {
-    // TODO: validation of pet data
+    try { pet = Pet.validatePet(pet); }
+    catch (Exception e) { throw new HttpException(HttpStatus.BAD_REQUEST, e.getMessage()); }
+    if (pet.getName() == null) throw new HttpException(HttpStatus.BAD_REQUEST, "Give the poor pet a name");
+
+    if (pet.getHat() != null || pet.getShirt() != null || pet.getPants() != null || pet.getShoes() != null) pet.setLastDressed(new Date());
     pet.setDeleted(false);
     Pet createdPet = dao.saveAndFlush(pet);
     if (createdPet == null) throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, "Pet could not be created");
@@ -48,10 +52,12 @@ public class PetsService
     Pet pet = dao.findPetById(petId);
     if (pet == null || pet.getDeleted()) throw new HttpException(HttpStatus.NOT_FOUND, "Pet " + petId.toString() + " not found");
 
+    try { changedPet = Pet.validatePet(changedPet); }
+    catch (Exception e) { throw new HttpException(HttpStatus.BAD_REQUEST, e.getMessage()); }
+
     changedPet.setId(petId);
     changedPet.setDeleted(false);
-
-    // TODO: validation of pet data
+    if (pet.getHat() != null || pet.getShirt() != null || pet.getPants() != null || pet.getShoes() != null) pet.setLastDressed(new Date());
     changedPet = dao.saveAndFlush(changedPet);
     if (changedPet == null) throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, "Pet " + petId.toString() + " could not be changed");
     return changedPet;
