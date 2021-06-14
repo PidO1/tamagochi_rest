@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import java.util.List;
+import io.sentry.Sentry;
 
 @Service
 public class UsersService {
@@ -28,6 +29,7 @@ public class UsersService {
       dao.saveAndFlush(user);
       return findUserByEmail(user.getEmail());
     } catch (Exception e) {
+      Sentry.captureException(e);
       throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
 
@@ -40,6 +42,7 @@ public class UsersService {
       dao.updateUser(user.getFirstName(), user.getLastName(), user.getEmail(), user.getId());
       return findUserById(user.getId());
     } catch (Exception e) {
+      Sentry.captureException(e);
       throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
   }
@@ -54,6 +57,7 @@ public class UsersService {
       AccessToken accessToken = AuthController.instance().authLogin(exsistingUser);
       return accessToken;
     } catch (Exception e) {
+      Sentry.captureException(e);
       throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
     }
 
@@ -63,6 +67,7 @@ public class UsersService {
     try {
       return dao.findAll();
     } catch (Exception e) {
+      Sentry.captureException(e);
       throw new HttpException(HttpStatus.NOT_FOUND, e.getMessage());
     }
   }
@@ -72,6 +77,7 @@ public class UsersService {
       User user = dao.findUsersById(userId);
       return user;
     } catch (Exception e) {
+      Sentry.captureException(e);
       throw new HttpException(HttpStatus.NOT_FOUND, e.getMessage());
     }
   }
@@ -81,6 +87,7 @@ public class UsersService {
       User user = dao.findUserByEmail(email);
       return user;
     } catch (Exception e) {
+      Sentry.captureException(e);
       throw new HttpException(HttpStatus.NOT_FOUND, e.getMessage());
     }
   }
