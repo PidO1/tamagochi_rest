@@ -4,6 +4,7 @@ package com.app.tamagotchi.requests.pets;
 import com.app.tamagotchi.response.HttpException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
 import javax.inject.Inject;
 import java.util.Date;
 import java.util.List;

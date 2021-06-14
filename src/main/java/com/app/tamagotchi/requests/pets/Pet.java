@@ -1,10 +1,12 @@
 package com.app.tamagotchi.requests.pets;
 
 
-import java.util.Date;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.util.Date;
 import javax.persistence.*;
+
 
 @Entity
 @Table(name = "pets")

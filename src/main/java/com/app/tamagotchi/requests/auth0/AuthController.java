@@ -44,8 +44,8 @@ public class AuthController {
     return response;
   }
 
-
   public AccessToken authLogin(User user) throws Exception {
+
     OkHttpClient client = new OkHttpClient().newBuilder()
             .build();
     MediaType mediaType = MediaType.parse(Constants.URLENCODED_VALUE);
@@ -62,15 +62,15 @@ public class AuthController {
   }
 
   public boolean checkResponseCode(Response response) throws Exception {
+
     if (response.code() >= 400) return true;
     else return false;
   }
 
-
   public void verifyToken(String token) throws HttpException {
+    
     try {
-
-      //TODO: Decrypt JWT
+      //TODO: Decrypt JWT if we can validate using only the token
       OkHttpClient client = new OkHttpClient().newBuilder()
               .build();
       Request request = new Request.Builder()
@@ -92,9 +92,5 @@ public class AuthController {
     } catch (Exception e) {
       throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, "Could not verify JWT token integrity!", e);
     }
-
-
   }
-
-
 }

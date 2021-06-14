@@ -34,7 +34,6 @@ public final class ControllerUtils {
                             .build())
                     .withResult(result)
                     .nextStep(nextStep));
-
   }
 
   public static <T> ApiResult<T> generateResponse(HttpStatus status, T result, String message, String nextStep) {
@@ -45,8 +44,5 @@ public final class ControllerUtils {
                             .build())
                     .withResult(result)
                     .nextStep(nextStep);
-
   }
-
-
 }

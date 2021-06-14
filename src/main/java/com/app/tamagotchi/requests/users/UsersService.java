@@ -16,7 +16,6 @@ public class UsersService {
   @Inject
   private UsersDAO dao;
 
-
   public User createUser(User user) throws HttpException {
     try {
       User exsistingUser = findUserByEmail(user.getEmail());

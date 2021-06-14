@@ -22,7 +22,7 @@ public class HttpException extends Exception
     this.errorMessage = errorMessage;
   }
 
-  public HttpException(HttpStatus httpStatus, String errorMessage, Exception e)
+  public HttpException(HttpStatus httpStatus, String errorMessage, Exception exception)
   {
     this.httpStatus = httpStatus;
     this.errorMessage = errorMessage;
