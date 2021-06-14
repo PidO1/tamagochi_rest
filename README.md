@@ -7,10 +7,11 @@ This project is aimed at enhancing the skills of a group of BBD graduates to lea
 
 # PROJECT SET UP
 Make sure you have maven installed (version > 3.0.0)
+
 Make sure jou have JDK installed (version > 11.0)
 
 To install the dependencies, run 
-> mvn clean install 
+> $ mvn clean install 
 
 To run the REST server, run
-> mvn spring-boot:run
+> $ mvn spring-boot:run

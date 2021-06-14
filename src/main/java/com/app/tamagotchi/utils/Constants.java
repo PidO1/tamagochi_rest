@@ -1,15 +1,33 @@
 package com.app.tamagotchi.utils;
 
+import com.app.tamagotchi.requests.users.User;
+
 public class Constants {
 
-  public static final String APPLICATION_JSON_VALUE = "application/json";
-  public final static String URL = "jdbc:sqlserver://localhost;databaseName=hotspot_db1";
-  public final static String USER = "sa";
-  public final static String PASSWORD = "LesothoKolonyama@1912";
-  public static final Integer TCP_SERVER_PORT = 8080;
-  public static final Long TIMEOUT_MILLISECONDS = 2000L;
-  public final static String POSSITIONSTACK_API_URL_FORWARD = "http://api.positionstack.com/v1/forward?access_key=";
-  public final static String POSSITIONSTACK_API_URL_REVERSE = "http://api.positionstack.com/v1/reverse?access_key=";
-  public final static String GOOGLE_API_URL="https://www.googleapis.com/oauth2/v3/userinfo?access_token=";
-  public final static String GOOGLE_API_URL_REVOKE = "https://oauth2.googleapis.com/revoke?token=";
+  public static final String JSON_VALUE = "application/json";
+  public static final String URLENCODED_VALUE = "application/x-www-form-urlencoded";
+  public static final String URL = "https://dev-jxp7hcj8.eu.auth0.com/";
+  public static final String AUDIENCE = "https://tamagotchi/";
+  public static final String DOMAIN = "dev-jxp7hcj8.eu.auth0.com";
+  public static final String CLIENT_ID = "7BxOnfduCO4hdXXlI54D9hlrJfCIuVOi";
+  public static final String CLIENT_SECRET ="XA8_5v6V9G7pc7sUouifsGJKXr8CAJ5T565lYqu4YoS2XunnH9pS0BpStX3E2oe_";
+  public static final String CONNTECTION ="tamagotchi-auth0-db";
+  public static final String GRANT_TYPE = "password";
+
+
+  public static String loginBuilder(User user){
+    StringBuilder str
+            = new StringBuilder();
+
+    str.append("grant_type=" + Constants.GRANT_TYPE);
+    str.append("&client_id=" + Constants.CLIENT_ID);
+    str.append("&client_secret=" + Constants.CLIENT_SECRET);
+    str.append("&audience=" + Constants.AUDIENCE);
+    str.append("&username=" + user.getEmail());
+    str.append("&password=" + user.getPassword());
+    str.append("&scope=openid");
+
+    return str.toString();
+  }
+
 }

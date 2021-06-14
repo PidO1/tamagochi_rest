@@ -1,6 +1,7 @@
 package com.app.tamagotchi.requests.users;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -8,7 +9,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "users")
 @Data
-public class Users {
+public class User {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,5 +24,13 @@ public class Users {
 
   @Column(name = "email")
   private String email;
+
+  @Transient
+  @JsonProperty("password")
+  private String password;
+
+  @Transient
+  @JsonProperty("access_token")
+  private String accessToken;
 
 }
