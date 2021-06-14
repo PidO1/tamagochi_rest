@@ -19,7 +19,13 @@ import io.sentry.spring.EnableSentry;
 public class TamagotchiApplication extends SpringBootServletInitializer {
 
   public static void main(String[] args) {
-    SpringApplication.run(TamagotchiApplication.class, args);
+    
+    try {
+      SpringApplication.run(TamagotchiApplication.class, args);
+  throw new Exception("This is a test.");
+} catch (Exception e) {
+  Sentry.captureException(e);
+}
  
 
   }
