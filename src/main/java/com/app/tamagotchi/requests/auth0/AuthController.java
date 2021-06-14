@@ -50,7 +50,6 @@ public class AuthController {
             .build();
     MediaType mediaType = MediaType.parse(Constants.URLENCODED_VALUE);
     RequestBody body = RequestBody.create(mediaType, Constants.loginBuilder(user));
-    System.out.println(Constants.loginBuilder(user));
     Request request = new Request.Builder()
             .url(Constants.URL + "oauth/token")
             .method("POST", body)

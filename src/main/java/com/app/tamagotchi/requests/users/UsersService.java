@@ -23,9 +23,8 @@ public class UsersService {
       if (exsistingUser != null)
         throw new Exception("Duplicate User Warning! That email is already registered on the system");
 
+      //TODO: FIX THIS? --- BRAD
       Response response = AuthController.instance().signUp(user);
-      System.out.println(response);
-
       dao.saveAndFlush(user);
       return findUserByEmail(user.getEmail());
     } catch (Exception e) {
