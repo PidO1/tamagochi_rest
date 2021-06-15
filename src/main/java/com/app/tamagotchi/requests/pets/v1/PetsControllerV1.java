@@ -1,6 +1,7 @@
 package com.app.tamagotchi.requests.pets.v1;
 
 
+import com.app.tamagotchi.requests.auth0.AuthController;
 import com.app.tamagotchi.interfaces.Secured;
 import com.app.tamagotchi.requests.pets.Pet;
 import com.app.tamagotchi.requests.pets.PetsService;
@@ -11,6 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.app.tamagotchi.utils.GenericUtility;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -21,7 +25,7 @@ import io.sentry.Sentry;
 @RestController
 @RequestMapping("tamagotchi/v1/pets")
 @Slf4j
-public class PetsControllerV1 
+public class PetsControllerV1 extends AuthController
 {
 
   // This class maps all the endpoints for V1 of the Tamagotchi Pets to the PetService
@@ -35,6 +39,7 @@ public class PetsControllerV1
   {
     try 
     {
+      verifyToken(GenericUtility.getToken(RequestContextHolder.getRequestAttributes()));
       List<Pet> pets = petService.getAllPets();
       return ControllerUtils.responseOf(HttpStatus.OK, pets, "Pets found");
     } 
@@ -52,6 +57,7 @@ public class PetsControllerV1
   {
     try 
     {
+      verifyToken(GenericUtility.getToken(RequestContextHolder.getRequestAttributes()));
       Pet pet = petService.getPetById(petId);
       return ControllerUtils.responseOf(HttpStatus.OK, pet, "Pet " + petId.toString() + " found");
     } 
@@ -69,6 +75,7 @@ public class PetsControllerV1
   {
     try 
     {
+      verifyToken(GenericUtility.getToken(RequestContextHolder.getRequestAttributes()));
       Pet createdPet = petService.createPet(pet);
       return ControllerUtils.responseOf(HttpStatus.CREATED, createdPet, "Pet " + createdPet.getId().toString() + " created");
     }
@@ -86,6 +93,7 @@ public class PetsControllerV1
   {
     try 
     {
+      verifyToken(GenericUtility.getToken(RequestContextHolder.getRequestAttributes()));
       Pet changedPet = petService.changePetById(petId, pet);
       return ControllerUtils.responseOf(HttpStatus.OK, changedPet, "Pet " + petId.toString() + " changed");
     } 
@@ -103,11 +111,13 @@ public class PetsControllerV1
   {
     try 
     {
+      verifyToken(GenericUtility.getToken(RequestContextHolder.getRequestAttributes()));
       Pet changedPet = petService.updatePetById(petId, pet);
       return ControllerUtils.responseOf(HttpStatus.OK, changedPet, "Pet " + petId.toString() + " updated");
     } 
     catch (HttpException e)
     {
+      Sentry.captureException(e);
       log.error(e.getErrorMessage());
       return ControllerUtils.responseOf(e.getHttpStatus(), e.getErrorMessage());
     }
@@ -119,6 +129,7 @@ public class PetsControllerV1
   {
     try 
     {
+      verifyToken(GenericUtility.getToken(RequestContextHolder.getRequestAttributes()));
       petService.deletePetById(petId);
       return ControllerUtils.responseOf(HttpStatus.OK, "Pet " + petId.toString() + " deleted");
     } 
@@ -136,11 +147,13 @@ public class PetsControllerV1
   {
     try 
     {
+      verifyToken(GenericUtility.getToken(RequestContextHolder.getRequestAttributes()));
       petService.playWithPetById(petId);
       return ControllerUtils.responseOf(HttpStatus.OK, "Played with Pet " + petId.toString());
     } 
     catch (HttpException e)
     {
+      Sentry.captureException(e);
       log.error(e.getErrorMessage());
       return ControllerUtils.responseOf(e.getHttpStatus(), e.getErrorMessage());
     }
@@ -152,11 +165,13 @@ public class PetsControllerV1
   {
     try 
     {
+      verifyToken(GenericUtility.getToken(RequestContextHolder.getRequestAttributes()));
       petService.feedPetById(petId);
       return ControllerUtils.responseOf(HttpStatus.OK, "Fed Pet " + petId.toString());
     } 
     catch (HttpException e)
     {
+      Sentry.captureException(e);
       log.error(e.getErrorMessage());
       return ControllerUtils.responseOf(e.getHttpStatus(), e.getErrorMessage());
     }
