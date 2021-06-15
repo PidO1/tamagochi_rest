@@ -36,17 +36,4 @@ public final class ControllerUtils {
                     .nextStep(nextStep));
 
   }
-
-  public static <T> ApiResult<T> generateResponse(HttpStatus status, T result, String message, String nextStep) {
-    return new ApiResult<T>()
-                    .withMessage(ResultMessage.builder()
-                            .severity(status.value() >= ERROR_CODE_THRESHOLD ? Severity.ERROR : Severity.INFO)
-                            .message(message)
-                            .build())
-                    .withResult(result)
-                    .nextStep(nextStep);
-
-  }
-
-
 }
