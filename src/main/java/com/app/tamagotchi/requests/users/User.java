@@ -34,5 +34,4 @@ public class User {
   @Transient
   @JsonProperty("access_token")
   private String accessToken;
-
 }

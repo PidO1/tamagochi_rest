@@ -34,11 +34,6 @@ public class GenericUtility {
    return ((ServletRequestAttributes) requestAttributes).getRequest().getHeader("Authorization");
   }
 
-
-
-
-
-
   public static String removeListChar(String s) {
     s = s.replace(']', ' ');
     s = s.replace('[', ' ');
