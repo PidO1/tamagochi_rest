@@ -1,6 +1,7 @@
 package com.app.tamagotchi.requests.users;
 
 import com.app.tamagotchi.model.AccessToken;
+import com.app.tamagotchi.model.UserProfile;
 import com.app.tamagotchi.requests.auth0.AuthController;
 import com.app.tamagotchi.response.HttpException;
 import okhttp3.Response;
@@ -51,6 +52,13 @@ public class UsersService {
 
       exsistingUser.setPassword(user.getPassword());
       AccessToken accessToken = AuthController.instance().authLogin(exsistingUser);
+
+      if (accessToken != null) {
+        UserProfile userProfile = AuthController.instance().findUsersProfile(accessToken.getAccessToken());
+        if (Boolean.FALSE.equals(userProfile.getEmailVerified()))
+          throw new Exception("Please verify your email.");
+      }
+
       return accessToken;
     } catch (Exception e) {
       throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);

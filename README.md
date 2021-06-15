@@ -1,3 +1,4 @@
+[![Java CI with Maven](https://github.com/PidO1/tamagochi_rest/actions/workflows/maven.yml/badge.svg)](https://github.com/PidO1/tamagochi_rest/actions/workflows/maven.yml)
 # tamagochi_rest
 Rest API implementation to handle the lifecycle of a tamagochi
 
