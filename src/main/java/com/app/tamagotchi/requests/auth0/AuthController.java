@@ -60,7 +60,7 @@ public class AuthController {
     AccessToken accessToken = new Gson().fromJson(response.body().string(), AccessToken.class);
     return accessToken;
   }
-  
+
   public UserProfile findUsersProfile(String token) throws HttpException {
     try {
       //TODO: Decrypt JWT if we can validate using only the token

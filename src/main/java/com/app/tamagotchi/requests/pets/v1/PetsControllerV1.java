@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.*;
 import com.app.tamagotchi.utils.GenericUtility;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import io.sentry.Sentry;
 
 import javax.inject.Inject;
 import java.util.List;
 import java.lang.Exception;
-import io.sentry.Sentry;
 
 
 @RestController
