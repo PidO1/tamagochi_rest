@@ -91,6 +91,22 @@ public class PetsControllerV1
     }
   }
 
+  @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+  @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
+  public ResponseEntity updatePetById(@PathVariable(name = "id", required = true) Long petId, @RequestBody Pet pet) 
+  {
+    try 
+    {
+      Pet changedPet = petService.updatePetById(petId, pet);
+      return ControllerUtils.responseOf(HttpStatus.OK, changedPet, "Pet " + petId.toString() + " updated");
+    } 
+    catch (HttpException e)
+    {
+      log.error(e.getErrorMessage());
+      return ControllerUtils.responseOf(e.getHttpStatus(), e.getErrorMessage());
+    }
+  }
+
   @DeleteMapping(value = "/{id}")
   @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
   public ResponseEntity changePetById(@PathVariable(name = "id", required = true) Long petId) 

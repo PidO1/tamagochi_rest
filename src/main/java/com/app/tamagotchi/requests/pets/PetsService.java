@@ -54,6 +54,7 @@ public class PetsService
 
     try { changedPet = Pet.validatePet(changedPet); }
     catch (Exception e) { throw new HttpException(HttpStatus.BAD_REQUEST, e.getMessage()); }
+    if (changedPet.getName() == null) throw new HttpException(HttpStatus.BAD_REQUEST, "Give the poor pet a name");
 
     changedPet.setId(petId);
     changedPet.setDeleted(false);
@@ -61,6 +62,26 @@ public class PetsService
     changedPet = dao.saveAndFlush(changedPet);
     if (changedPet == null) throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, "Pet " + petId.toString() + " could not be changed");
     return changedPet;
+  }
+
+  public Pet updatePetById(Long petId, Pet updatedPet) throws HttpException
+  {
+    Pet pet = dao.findPetById(petId);
+    if (pet == null || pet.getDeleted()) throw new HttpException(HttpStatus.NOT_FOUND, "Pet " + petId.toString() + " not found");
+
+    try { updatedPet = Pet.validatePet(updatedPet); }
+    catch (Exception e) { throw new HttpException(HttpStatus.BAD_REQUEST, e.getMessage()); }
+
+    if (updatedPet.getHat() != null || updatedPet.getShirt() != null || updatedPet.getPants() != null || updatedPet.getShoes() != null) pet.setLastDressed(new Date());
+    if (updatedPet.getName() != null) pet.setName(updatedPet.getName());
+    if (updatedPet.getHat() != null) pet.setHat(updatedPet.getHat());
+    if (updatedPet.getShirt() != null) pet.setShirt(updatedPet.getShirt());
+    if (updatedPet.getPants() != null) pet.setPants(updatedPet.getPants());
+    if (updatedPet.getShoes() != null) pet.setShoes(updatedPet.getShoes());
+
+    updatedPet = dao.saveAndFlush(pet);
+    if (updatedPet == null) throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, "Pet " + petId.toString() + " could not be updated");
+    return updatedPet;
   }
 
   public void deletePetById(Long petId) throws HttpException

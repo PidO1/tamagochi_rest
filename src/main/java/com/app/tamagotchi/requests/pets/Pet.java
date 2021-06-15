@@ -51,7 +51,7 @@ public class Pet
 
   public static Pet validatePet(Pet pet) throws Exception
   {
-    if (pet == null) throw new Exception("Invalid pet provided");
+    if (pet == null) throw new Exception("Invalid pet data provided");
     if (pet.getId() != null) pet.setId(null);
     if (pet.getDeleted() != null) pet.setDeleted(null);
     if (pet.getLastFed() != null) pet.setLastFed(null);
@@ -64,7 +64,7 @@ public class Pet
     if (pet.getShirt() != null) valid = true;
     if (pet.getPants() != null) valid = true;
     if (pet.getShoes() != null) valid = true;
-    if (!valid) throw new Exception("Invalid pet provided");
+    if (!valid) throw new Exception("Invalid pet data provided");
 
     return pet;
   }
