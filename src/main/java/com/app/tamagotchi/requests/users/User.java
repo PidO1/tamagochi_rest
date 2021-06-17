@@ -30,7 +30,7 @@ public class User {
   private String lastName;
 
   @Column(name = "email")
-  @JsonProperty("Email")
+  @JsonProperty("email")
   private String email;
 
   @Transient
