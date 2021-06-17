@@ -9,12 +9,7 @@ import org.springframework.http.converter.*;
 @Configuration
 public class analyticsConfig extends WebMvcConfigurerAdapter {
 
-    MoesifConfiguration config = new MoesifConfigurationAdapter() {
-    @Override
-    public String getSessionToken(HttpServletRequest request, HttpServletResponse response) {
-      return request.getHeader("Authorization");
-    }
-  };
+
 
   @Bean
   public Filter moesifFilter() {
