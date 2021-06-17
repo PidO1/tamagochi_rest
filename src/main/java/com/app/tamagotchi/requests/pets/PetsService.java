@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.app.tamagotchi.requests.users.UsersService;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -45,12 +46,14 @@ public class PetsService
     try { pet = Pet.validatePet(pet); }
     catch (Exception e) { throw new HttpException(HttpStatus.BAD_REQUEST, "Not a valid pet"); }
     if (pet.getName() == null) throw new HttpException(HttpStatus.BAD_REQUEST, "Give the poor pet a name");
-    try {
-      user = usersService.findUserById(pet.getOwnerId());
-    }catch (Exception e) { throw new HttpException(HttpStatus.BAD_REQUEST, "User with id "+ pet.getOwnerId() +" does not exist"); }
-    pet.setOwner(user);
+//    try {
+//      user = usersService.findUserById(pet.getOwnerId());
+//    }catch (Exception e) { throw new HttpException(HttpStatus.BAD_REQUEST, "User with id "+ pet.getOwnerId() +" does not exist"); }
+//    pet.setOwner(user);
     pet.setDeleted(false);
-    if (pet.getHat() != null || pet.getShirt() != null || pet.getPants() != null || pet.getShoes() != null) pet.setLastDressed(new Date());
+    if (
+            //pet.getHat() != null ||
+            pet.getShirt() != null || pet.getPants() != null || pet.getShoes() != null) pet.setLastDressed(new Date());
     Pet createdPet = dao.saveAndFlush(pet);
     if (createdPet == null) throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, "Pet could not be created");
     return createdPet;
@@ -67,7 +70,9 @@ public class PetsService
 
     changedPet.setId(petId);
     changedPet.setDeleted(false);
-    if (changedPet.getHat() != null || changedPet.getShirt() != null || changedPet.getPants() != null || changedPet.getShoes() != null) changedPet.setLastDressed(new Date());
+    if (
+            //changedPet.getHat() != null ||
+            changedPet.getShirt() != null || changedPet.getPants() != null || changedPet.getShoes() != null) changedPet.setLastDressed(new Date());
     changedPet = dao.saveAndFlush(changedPet);
     if (changedPet == null) throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, "Pet " + petId.toString() + " could not be changed");
     return changedPet;
@@ -81,9 +86,11 @@ public class PetsService
     try { updatedPet = Pet.validatePet(updatedPet); }
     catch (Exception e) { throw new HttpException(HttpStatus.BAD_REQUEST, e.getMessage()); }
 
-    if (updatedPet.getHat() != null || updatedPet.getShirt() != null || updatedPet.getPants() != null || updatedPet.getShoes() != null) pet.setLastDressed(new Date());
+    if (
+//            updatedPet.getHat() != null ||
+                    updatedPet.getShirt() != null || updatedPet.getPants() != null || updatedPet.getShoes() != null) pet.setLastDressed(new Date());
     if (updatedPet.getName() != null) pet.setName(updatedPet.getName());
-    if (updatedPet.getHat() != null) pet.setHat(updatedPet.getHat());
+//    if (updatedPet.getHat() != null) pet.setHat(updatedPet.getHat());
     if (updatedPet.getShirt() != null) pet.setShirt(updatedPet.getShirt());
     if (updatedPet.getPants() != null) pet.setPants(updatedPet.getPants());
     if (updatedPet.getShoes() != null) pet.setShoes(updatedPet.getShoes());
@@ -125,9 +132,10 @@ public class PetsService
 
   public List<Pet> getPetsByOwnerId(Long ownerId) throws HttpException
   {
-    List<Pet> pets = dao.findAll();
-    pets.removeIf(elem -> elem.getDeleted() || elem.getOwner().getId() != ownerId);
+    List<Pet> pets = dao.findPetsTest(ownerId);
+    pets.removeIf(elem -> elem.getDeleted() || elem.getOwnerId() == ownerId);
     if (pets.size() == 0) throw new HttpException(HttpStatus.NOT_FOUND, "No pets found");
     return pets;
   }
+
 }

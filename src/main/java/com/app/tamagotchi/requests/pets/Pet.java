@@ -25,13 +25,12 @@ public class Pet
   @Column(name = "id")
   private Long id;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+//  @ManyToOne(fetch = FetchType.EAGER)
 //  @JoinTable(name="users",
-//          joinColumns={@JoinColumn(name="user.id")},
-//          inverseJoinColumns={@JoinColumn(name="pet.id")})
-  @JoinColumn(name="user_id", nullable=false)
-  @Fetch(FetchMode.JOIN)
-  private User owner;
+//    joinColumns={@JoinColumn(name="id")},
+//    inverseJoinColumns={@JoinColumn(name="owner_id")})
+//
+//  private User owner;
 
   @Column(name = "deleted")
   @JsonIgnore
@@ -61,8 +60,7 @@ public class Pet
   @Column(name = "shoes")
   private String shoes;
 
-  @Transient
-  @JsonProperty("owner_id")
+  @Column(name= "owner_id")
   private Long ownerId;
 
   public static Pet validatePet(Pet pet) throws Exception
@@ -73,7 +71,7 @@ public class Pet
     if (pet.getLastFed() != null) pet.setLastFed(null);
     if (pet.getLastPlayed() != null) pet.setLastPlayed(null);
     if (pet.getLastDressed() != null) pet.setLastDressed(null);
-    if (pet.getOwner() != null) pet.setOwner(null);
+    if (pet.getOwnerId() != null) pet.setOwnerId(null);
 
     Boolean valid = false;
     if (pet.getName() != null) valid = true;
