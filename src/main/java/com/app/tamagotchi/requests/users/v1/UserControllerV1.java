@@ -12,6 +12,7 @@ import com.app.tamagotchi.utils.Constants;
 import com.app.tamagotchi.utils.ControllerUtils;
 import com.app.tamagotchi.utils.GenericUtility;
 import io.sentry.Sentry;
+import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,15 +30,11 @@ public class UserControllerV1 extends AuthController {
   @Inject
   private UsersService usersService;
 
-  @GetMapping(path = "/HelloWorld")
-  @Secured(secureStatus = Secured.SecureStatus.PUBLIC)
-  public ResponseEntity helloWorld() {
-    return ControllerUtils.responseOf(HttpStatus.OK, "Hello World!");
-  }
-
-  //CREATE
+   //CREATE
   @PostMapping(value = "/", consumes = Constants.JSON_VALUE, produces = Constants.JSON_VALUE)
-  @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
+  @ApiOperation(
+          value = "Creates a user",
+          notes = "Creating a user will allow for further functionality, such as logging in and creating pets")
   public ResponseEntity createUser(@RequestBody User user) {
     try {
       User createUser = usersService.createUser(user);
@@ -51,7 +48,9 @@ public class UserControllerV1 extends AuthController {
 
   //LOGIN
   @PostMapping(value = "/login", consumes = Constants.JSON_VALUE, produces = Constants.JSON_VALUE)
-  @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
+  @ApiOperation(
+          value = "User is able to log into the system",
+          notes = "Third Party Authentication - Auth0")
   public ResponseEntity login(@RequestBody User user) {
     try {
       AccessToken accessToken = usersService.login(user);
@@ -65,13 +64,13 @@ public class UserControllerV1 extends AuthController {
 
   //UPDATE
   @PatchMapping(value = "/", consumes = Constants.JSON_VALUE, produces = Constants.JSON_VALUE)
-  @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
+  @ApiOperation( value = "Update User information")
   public ResponseEntity updateUser(@RequestBody User user) {
     try {
       String token = GenericUtility.getToken(RequestContextHolder.getRequestAttributes());
       verifyToken(token);
       User updatedUser = usersService.updateUser(user, token);
-      return ControllerUtils.responseOf(HttpStatus.OK, updatedUser, "User updated!");
+      return ControllerUtils.responseOf(HttpStatus.OK, "User updated!");
     } catch (HttpException e) {
       log.error(e.getErrorMessage(), e);
       Sentry.captureException(e);
@@ -81,7 +80,7 @@ public class UserControllerV1 extends AuthController {
 
   //ALL USERS
   @GetMapping(value = "/", produces = Constants.JSON_VALUE)
-  @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
+  @ApiOperation(value = "Provides a list of all users")
   public ResponseEntity allUsers() {
     try {
       verifyToken(GenericUtility.getToken(RequestContextHolder.getRequestAttributes()));
@@ -96,7 +95,8 @@ public class UserControllerV1 extends AuthController {
 
   //USER BY EMAILS
   @GetMapping(value = "/{email}", consumes = Constants.JSON_VALUE, produces = Constants.JSON_VALUE)
-  @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
+  @ApiOperation(value = "Provides a user by a given email")
+
   public ResponseEntity findUserById(@PathVariable(name = "email", required = true) String email) {
     try {
       verifyToken(GenericUtility.getToken(RequestContextHolder.getRequestAttributes()));
