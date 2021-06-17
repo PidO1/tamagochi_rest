@@ -1,6 +1,7 @@
 package com.app.tamagotchi.requests.users;
 
 import com.app.tamagotchi.model.AccessToken;
+import com.app.tamagotchi.model.UserProfile;
 import com.app.tamagotchi.requests.auth0.AuthController;
 import com.app.tamagotchi.response.HttpException;
 import okhttp3.Response;
@@ -16,7 +17,6 @@ public class UsersService {
 
   @Inject
   private UsersDAO dao;
-
 
   public User createUser(User user) throws HttpException {
     try {
@@ -55,6 +55,13 @@ public class UsersService {
 
       exsistingUser.setPassword(user.getPassword());
       AccessToken accessToken = AuthController.instance().authLogin(exsistingUser);
+
+      if (accessToken != null) {
+        UserProfile userProfile = AuthController.instance().findUsersProfile(accessToken.getAccessToken());
+        if (Boolean.FALSE.equals(userProfile.getEmailVerified()))
+          throw new Exception("Please verify your email.");
+      }
+
       return accessToken;
     } catch (Exception e) {
       Sentry.captureException(e);

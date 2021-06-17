@@ -44,8 +44,8 @@ public class AuthController {
     return response;
   }
 
-
   public AccessToken authLogin(User user) throws Exception {
+
     OkHttpClient client = new OkHttpClient().newBuilder()
             .build();
     MediaType mediaType = MediaType.parse(Constants.URLENCODED_VALUE);
@@ -61,16 +61,9 @@ public class AuthController {
     return accessToken;
   }
 
-  public boolean checkResponseCode(Response response) throws Exception {
-    if (response.code() >= 400) return true;
-    else return false;
-  }
-
-
-  public void verifyToken(String token) throws HttpException {
+  public UserProfile findUsersProfile(String token) throws HttpException {
     try {
-
-      //TODO: Decrypt JWT
+      //TODO: Decrypt JWT if we can validate using only the token
       OkHttpClient client = new OkHttpClient().newBuilder()
               .build();
       Request request = new Request.Builder()
@@ -82,20 +75,30 @@ public class AuthController {
       boolean checkCode = checkResponseCode(response);
       if (!checkCode) {
         UserProfile userProfile = new Gson().fromJson(response.body().string(), UserProfile.class);
-        if (userProfile != null) {
-          User user = dao.findUserByEmail(userProfile.getEmail());
-          if(user == null && !(user.getEmail().matches(userProfile.getEmail()))) throw new Exception();
-        }
+        return userProfile;
       } else {
         throw new Exception();
       }
     } catch (Exception e) {
       Sentry.captureException(e);
-      throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, "Could not verify JWT token integrity!", e);
+      throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage() == null ? "Could not verify JWT token integrity!" : e.getMessage(), e);
     }
-
-
   }
 
+  public boolean checkResponseCode(Response response) throws Exception {
+    if (response.code() >= 400) return true;
+    else return false;
+  }
 
+  public void verifyToken(String token) throws HttpException {
+    try {
+
+      UserProfile userProfile = findUsersProfile(token);
+        if (userProfile == null) {
+          throw new Exception();
+        }
+    } catch (Exception e) {
+      throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage() == null ? "Could not verify JWT token integrity!" : e.getMessage(), e);
+    }
+  }
 }
