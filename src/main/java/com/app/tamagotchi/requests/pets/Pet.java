@@ -1,12 +1,8 @@
 package com.app.tamagotchi.requests.pets;
 
 
-import com.app.tamagotchi.requests.users.User;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import java.util.Date;
 import javax.persistence.*;
@@ -24,14 +20,6 @@ public class Pet
   @GeneratedValue(strategy = GenerationType.IDENTITY)  // Auto-generates IDs when an object is created
   @Column(name = "id")
   private Long id;
-
-  @ManyToOne(fetch = FetchType.LAZY)
-//  @JoinTable(name="users",
-//          joinColumns={@JoinColumn(name="user.id")},
-//          inverseJoinColumns={@JoinColumn(name="pet.id")})
-  @JoinColumn(name="user_id", nullable=false)
-  @Fetch(FetchMode.JOIN)
-  private User owner;
 
   @Column(name = "deleted")
   @JsonIgnore
@@ -61,8 +49,7 @@ public class Pet
   @Column(name = "shoes")
   private String shoes;
 
-  @Transient
-  @JsonProperty("owner_id")
+  @Column(name = "owner_id")
   private Long ownerId;
 
   public static Pet validatePet(Pet pet) throws Exception
@@ -73,7 +60,6 @@ public class Pet
     if (pet.getLastFed() != null) pet.setLastFed(null);
     if (pet.getLastPlayed() != null) pet.setLastPlayed(null);
     if (pet.getLastDressed() != null) pet.setLastDressed(null);
-    if (pet.getOwner() != null) pet.setOwner(null);
 
     Boolean valid = false;
     if (pet.getName() != null) valid = true;

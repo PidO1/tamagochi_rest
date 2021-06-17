@@ -4,9 +4,10 @@ package com.app.tamagotchi.requests.users.v1;
 import com.app.tamagotchi.enums.NextStep;
 import com.app.tamagotchi.interfaces.Secured;
 import com.app.tamagotchi.model.AccessToken;
-import com.app.tamagotchi.model.UserProfile;
 import com.app.tamagotchi.requests.auth0.AuthController;
 import com.app.tamagotchi.requests.users.User;
+import com.app.tamagotchi.requests.pets.Pet;
+import com.app.tamagotchi.requests.pets.PetsService;
 import com.app.tamagotchi.requests.users.UsersService;
 import com.app.tamagotchi.response.HttpException;
 import com.app.tamagotchi.utils.Constants;
@@ -18,11 +19,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.inject.Inject;
 import java.util.List;
-import java.lang.Exception;
 
 @RestController
 @RequestMapping("tamagotchi/v1/users")
@@ -31,6 +30,9 @@ public class UserControllerV1 extends AuthController {
 
   @Inject
   private UsersService usersService;
+
+  @Inject
+  private PetsService petsService;
 
   @GetMapping(path = "/HelloWorld")
   @Secured(secureStatus = Secured.SecureStatus.PUBLIC)
@@ -99,7 +101,7 @@ public class UserControllerV1 extends AuthController {
   //USER BY EMAILS
   @GetMapping(value = "/{email}", consumes = Constants.JSON_VALUE, produces = Constants.JSON_VALUE)
   @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
-  public ResponseEntity findUserById(@PathVariable(name = "email", required = true) String email) {
+  public ResponseEntity findUserByEmail(@PathVariable(name = "email", required = true) String email) {
     try {
       verifyToken(GenericUtility.getToken(RequestContextHolder.getRequestAttributes()));
       User users = usersService.findUserByEmail(email);
@@ -109,6 +111,37 @@ public class UserControllerV1 extends AuthController {
       log.error(e.getErrorMessage(), e);
       Sentry.captureException(e);
       return ControllerUtils.responseOf(e.getHttpStatus(), e.getErrorMessage(), NextStep.REDO.getNextStep());
+    }
+  }
+
+  //USER BY ID
+  @GetMapping(value = "/id/{id}", consumes = Constants.JSON_VALUE, produces = Constants.JSON_VALUE)
+  @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
+  public ResponseEntity findUserById(@PathVariable(name = "id", required = true) long id) {
+    try {
+      verifyToken(GenericUtility.getToken(RequestContextHolder.getRequestAttributes()));
+      User users = usersService.findUserById(id);
+      if (users == null) throw new HttpException(HttpStatus.NOT_FOUND, "User not found!");
+      return ControllerUtils.responseOf(HttpStatus.OK, users, "User found!");
+    } catch (HttpException e) {
+      log.error(e.getErrorMessage(), e);
+      Sentry.captureException(e);
+      return ControllerUtils.responseOf(e.getHttpStatus(), e.getErrorMessage(), NextStep.REDO.getNextStep());
+    }
+  }
+
+  //PETS BY USER
+  @GetMapping(value = "/{id}/pets")
+  @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
+  public ResponseEntity getPetsByOwnerId(@PathVariable(name = "id", required = true) Long ownerId) {
+    try {
+      verifyToken(GenericUtility.getToken(RequestContextHolder.getRequestAttributes()));
+      List<Pet> pets = petsService.getPetsByOwnerId(ownerId);
+      return ControllerUtils.responseOf(HttpStatus.OK, pets, "Pets for owner " + ownerId.toString() + " found");
+    } catch (HttpException e) {
+      Sentry.captureException(e);
+      log.error(e.getErrorMessage());
+      return ControllerUtils.responseOf(e.getHttpStatus(), e.getErrorMessage());
     }
   }
 }

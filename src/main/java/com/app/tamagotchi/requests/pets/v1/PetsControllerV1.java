@@ -30,7 +30,7 @@ public class PetsControllerV1 extends AuthController
   // This class maps all the endpoints for V1 of the Tamagotchi Pets to the PetService
 
   @Inject
-  private PetsService petService;
+  private PetsService petsService;
 
   @GetMapping(value = "/")
   @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
@@ -39,7 +39,7 @@ public class PetsControllerV1 extends AuthController
     try 
     {
       verifyToken(GenericUtility.getToken(RequestContextHolder.getRequestAttributes()));
-      List<Pet> pets = petService.getAllPets();
+      List<Pet> pets = petsService.getAllPets();
       return ControllerUtils.responseOf(HttpStatus.OK, pets, "Pets found");
     } 
     catch (HttpException e)
@@ -57,7 +57,7 @@ public class PetsControllerV1 extends AuthController
     try 
     {
       verifyToken(GenericUtility.getToken(RequestContextHolder.getRequestAttributes()));
-      Pet pet = petService.getPetById(petId);
+      Pet pet = petsService.getPetById(petId);
       return ControllerUtils.responseOf(HttpStatus.OK, pet, "Pet " + petId.toString() + " found");
     } 
     catch (HttpException e)
@@ -75,7 +75,7 @@ public class PetsControllerV1 extends AuthController
     try 
     {
       verifyToken(GenericUtility.getToken(RequestContextHolder.getRequestAttributes()));
-      Pet createdPet = petService.createPet(pet);
+      Pet createdPet = petsService.createPet(pet);
       return ControllerUtils.responseOf(HttpStatus.CREATED, createdPet, "Pet " + createdPet.getId().toString() + " created");
     }
     catch (HttpException e)
@@ -93,7 +93,7 @@ public class PetsControllerV1 extends AuthController
     try 
     {
       verifyToken(GenericUtility.getToken(RequestContextHolder.getRequestAttributes()));
-      Pet changedPet = petService.changePetById(petId, pet);
+      Pet changedPet = petsService.changePetById(petId, pet);
       return ControllerUtils.responseOf(HttpStatus.OK, changedPet, "Pet " + petId.toString() + " changed");
     } 
     catch (HttpException e)
@@ -111,7 +111,7 @@ public class PetsControllerV1 extends AuthController
     try 
     {
       verifyToken(GenericUtility.getToken(RequestContextHolder.getRequestAttributes()));
-      Pet changedPet = petService.updatePetById(petId, pet);
+      Pet changedPet = petsService.updatePetById(petId, pet);
       return ControllerUtils.responseOf(HttpStatus.OK, changedPet, "Pet " + petId.toString() + " updated");
     } 
     catch (HttpException e)
@@ -129,7 +129,7 @@ public class PetsControllerV1 extends AuthController
     try 
     {
       verifyToken(GenericUtility.getToken(RequestContextHolder.getRequestAttributes()));
-      petService.deletePetById(petId);
+      petsService.deletePetById(petId);
       return ControllerUtils.responseOf(HttpStatus.OK, "Pet " + petId.toString() + " deleted");
     } 
     catch (HttpException e)
@@ -147,7 +147,7 @@ public class PetsControllerV1 extends AuthController
     try 
     {
       verifyToken(GenericUtility.getToken(RequestContextHolder.getRequestAttributes()));
-      petService.playWithPetById(petId);
+      petsService.playWithPetById(petId);
       return ControllerUtils.responseOf(HttpStatus.OK, "Played with Pet " + petId.toString());
     } 
     catch (HttpException e)
@@ -165,27 +165,9 @@ public class PetsControllerV1 extends AuthController
     try 
     {
       verifyToken(GenericUtility.getToken(RequestContextHolder.getRequestAttributes()));
-      petService.feedPetById(petId);
+      petsService.feedPetById(petId);
       return ControllerUtils.responseOf(HttpStatus.OK, "Fed Pet " + petId.toString());
     } 
-    catch (HttpException e)
-    {
-      Sentry.captureException(e);
-      log.error(e.getErrorMessage());
-      return ControllerUtils.responseOf(e.getHttpStatus(), e.getErrorMessage());
-    }
-  }
-
-  @GetMapping(value = "/owner/{id}")
-  @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
-  public ResponseEntity getPetsByOwnerId(@PathVariable(name = "id", required = true) Long ownerId)
-  {
-    try
-    {
-      verifyToken(GenericUtility.getToken(RequestContextHolder.getRequestAttributes()));
-      List<Pet> pets = petService.getPetsByOwnerId(ownerId);
-      return ControllerUtils.responseOf(HttpStatus.OK, pets, "Pets for owner " + ownerId.toString() + " found");
-    }
     catch (HttpException e)
     {
       Sentry.captureException(e);
