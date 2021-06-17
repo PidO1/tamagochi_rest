@@ -2,8 +2,11 @@ package com.app.tamagotchi.requests.pets;
 
 
 import com.app.tamagotchi.requests.users.User;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import java.util.Date;
 import javax.persistence.*;
@@ -23,7 +26,11 @@ public class Pet
   private Long id;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "user.id")
+//  @JoinTable(name="users",
+//          joinColumns={@JoinColumn(name="user.id")},
+//          inverseJoinColumns={@JoinColumn(name="pet.id")})
+  @JoinColumn(name="user_id", nullable=false)
+  @Fetch(FetchMode.JOIN)
   private User owner;
 
   @Column(name = "deleted")
@@ -54,6 +61,10 @@ public class Pet
   @Column(name = "shoes")
   private String shoes;
 
+  @Transient
+  @JsonProperty("owner_id")
+  private Long ownerId;
+
   public static Pet validatePet(Pet pet) throws Exception
   {
     if (pet == null) throw new Exception("Invalid pet data provided");
@@ -70,6 +81,7 @@ public class Pet
     if (pet.getShirt() != null) valid = true;
     if (pet.getPants() != null) valid = true;
     if (pet.getShoes() != null) valid = true;
+    if (pet.getOwnerId() != null ) valid = true;
     if (!valid) throw new Exception("Invalid pet data provided");
 
     return pet;

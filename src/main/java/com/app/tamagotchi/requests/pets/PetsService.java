@@ -4,6 +4,7 @@ package com.app.tamagotchi.requests.pets;
 import com.app.tamagotchi.response.HttpException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import com.app.tamagotchi.requests.users.UsersService;
 
 import javax.inject.Inject;
 import java.util.Date;
@@ -18,6 +19,9 @@ public class PetsService
 
   @Inject
   private PetsDAO dao;
+
+  @Inject
+  private UsersService usersService;
 
   public List<Pet> getAllPets() throws HttpException
   {
@@ -39,7 +43,7 @@ public class PetsService
     try { pet = Pet.validatePet(pet); }
     catch (Exception e) { throw new HttpException(HttpStatus.BAD_REQUEST, e.getMessage()); }
     if (pet.getName() == null) throw new HttpException(HttpStatus.BAD_REQUEST, "Give the poor pet a name");
-
+    pet.setOwner(usersService.findUserById(pet.getOwnerId()));
     pet.setDeleted(false);
     if (pet.getHat() != null || pet.getShirt() != null || pet.getPants() != null || pet.getShoes() != null) pet.setLastDressed(new Date());
     Pet createdPet = dao.saveAndFlush(pet);
