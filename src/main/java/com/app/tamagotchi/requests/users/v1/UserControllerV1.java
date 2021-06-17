@@ -1,9 +1,9 @@
 package com.app.tamagotchi.requests.users.v1;
 
+
 import com.app.tamagotchi.enums.NextStep;
 import com.app.tamagotchi.interfaces.Secured;
 import com.app.tamagotchi.model.AccessToken;
-import com.app.tamagotchi.model.UserProfile;
 import com.app.tamagotchi.requests.auth0.AuthController;
 import com.app.tamagotchi.requests.users.User;
 import com.app.tamagotchi.requests.users.UsersService;
@@ -16,22 +16,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import io.sentry.Sentry;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiOperation;
+import org.springframework.web.context.request.RequestContextHolder;
 
 import javax.inject.Inject;
 import java.util.List;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
-import java.lang.Exception;
 
 @RestController
 @RequestMapping("tamagotchi/v1/users")
 @Slf4j
-@Api(tags = "Users", description = "These endpoints are used to manage the user details")
 public class UserControllerV1 extends AuthController {
 
   @Inject
@@ -39,20 +31,17 @@ public class UserControllerV1 extends AuthController {
 
   @GetMapping(path = "/HelloWorld")
   @Secured(secureStatus = Secured.SecureStatus.PUBLIC)
-  @ApiOperation(value = "Hello World endpoint")
   public ResponseEntity helloWorld() {
     return ControllerUtils.responseOf(HttpStatus.OK, "Hello World!");
   }
 
-  // CREATE
+  //CREATE
   @PostMapping(value = "/", consumes = Constants.JSON_VALUE, produces = Constants.JSON_VALUE)
   @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
-  @ApiOperation(value = "Creates a new user")
   public ResponseEntity createUser(@RequestBody User user) {
     try {
       User createUser = usersService.createUser(user);
-      return ControllerUtils.responseOf(HttpStatus.OK, createUser, "User registered on the system!",
-          NextStep.VERIFY_EMAIL.getNextStep());
+      return ControllerUtils.responseOf(HttpStatus.OK, createUser, "User registered on the system!", NextStep.VERIFY_EMAIL.getNextStep());
     } catch (HttpException e) {
       log.error(e.getErrorMessage(), e);
       Sentry.captureException(e);
@@ -60,15 +49,13 @@ public class UserControllerV1 extends AuthController {
     }
   }
 
-  // LOGIN
+  //LOGIN
   @PostMapping(value = "/login", consumes = Constants.JSON_VALUE, produces = Constants.JSON_VALUE)
   @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
-  @ApiOperation(value = "Allows a user to login")
   public ResponseEntity login(@RequestBody User user) {
     try {
       AccessToken accessToken = usersService.login(user);
-      return ControllerUtils.responseOf(HttpStatus.OK, accessToken, "Login successful",
-          NextStep.CREATE_PET.getNextStep());
+      return ControllerUtils.responseOf(HttpStatus.OK, accessToken, "Login successful", NextStep.CREATE_PET.getNextStep());
     } catch (HttpException e) {
       log.error(e.getErrorMessage(), e);
       Sentry.captureException(e);
@@ -76,14 +63,14 @@ public class UserControllerV1 extends AuthController {
     }
   }
 
-  // UPDATE
-  @PutMapping(value = "/", consumes = Constants.JSON_VALUE, produces = Constants.JSON_VALUE)
+  //UPDATE
+  @PatchMapping(value = "/", consumes = Constants.JSON_VALUE, produces = Constants.JSON_VALUE)
   @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
-  @ApiOperation(value = "Updates a given user")
   public ResponseEntity updateUser(@RequestBody User user) {
     try {
-      verifyToken(GenericUtility.getToken(RequestContextHolder.getRequestAttributes()));
-      User updatedUser = usersService.updateUser(user);
+      String token = GenericUtility.getToken(RequestContextHolder.getRequestAttributes());
+      verifyToken(token);
+      User updatedUser = usersService.updateUser(user, token);
       return ControllerUtils.responseOf(HttpStatus.OK, updatedUser, "User updated!");
     } catch (HttpException e) {
       log.error(e.getErrorMessage(), e);
@@ -92,10 +79,9 @@ public class UserControllerV1 extends AuthController {
     }
   }
 
-  // ALL USERS
+  //ALL USERS
   @GetMapping(value = "/", produces = Constants.JSON_VALUE)
   @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
-  @ApiOperation(value = "Retrieves all users")
   public ResponseEntity allUsers() {
     try {
       verifyToken(GenericUtility.getToken(RequestContextHolder.getRequestAttributes()));
@@ -108,16 +94,14 @@ public class UserControllerV1 extends AuthController {
     }
   }
 
-  // USER BY EMAILS
+  //USER BY EMAILS
   @GetMapping(value = "/{email}", consumes = Constants.JSON_VALUE, produces = Constants.JSON_VALUE)
   @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
-  @ApiOperation(value = "Retrieves a user based on the provided email address")
   public ResponseEntity findUserById(@PathVariable(name = "email", required = true) String email) {
     try {
       verifyToken(GenericUtility.getToken(RequestContextHolder.getRequestAttributes()));
       User users = usersService.findUserByEmail(email);
-      if (users == null)
-        throw new HttpException(HttpStatus.NOT_FOUND, "User not found!");
+      if (users == null) throw new HttpException(HttpStatus.NOT_FOUND, "User not found!");
       return ControllerUtils.responseOf(HttpStatus.OK, users, "User found!");
     } catch (HttpException e) {
       log.error(e.getErrorMessage(), e);
