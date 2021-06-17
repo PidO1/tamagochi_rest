@@ -11,6 +11,7 @@ import com.app.tamagotchi.utils.GenericUtility;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
+import io.sentry.Sentry;
 import okhttp3.*;
 import org.springframework.http.HttpStatus;
 
@@ -77,6 +78,7 @@ public class AuthController {
     AccessToken accessToken = new Gson().fromJson(response.body().string(), AccessToken.class);
     return accessToken;
     } catch (HttpException e) {
+      Sentry.captureException(e);
       throw new HttpException(e.getHttpStatus(), e.getMessage());
     }
   }
@@ -100,6 +102,7 @@ public class AuthController {
         throw new Exception();
       }
     } catch (Exception e) {
+      Sentry.captureException(e);
       throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage() == null ? "Could not verify JWT token integrity!" : e.getMessage());
     }
   }
@@ -117,6 +120,7 @@ public class AuthController {
           throw new Exception();
         }
     } catch (Exception e) {
+      Sentry.captureException(e);
       throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage() == null ? "Could not verify JWT token integrity!" : e.getMessage(), e);
     }
   }

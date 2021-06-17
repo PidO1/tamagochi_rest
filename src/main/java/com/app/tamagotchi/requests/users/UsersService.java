@@ -8,6 +8,7 @@ import com.app.tamagotchi.response.HttpException;
 import com.app.tamagotchi.utils.Constants;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import io.sentry.Sentry;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +32,7 @@ public class UsersService {
       dao.saveAndFlush(user);
       return findUserByEmail(user.getEmail());
     } catch (Exception e) {
+      Sentry.captureException(e);
       throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
 
@@ -58,6 +60,7 @@ public class UsersService {
       User updatedUser = findUserById(user.getId());
       return updatedUser;
     } catch (Exception e) {
+      Sentry.captureException(e);
       throw new HttpException(HttpStatus.BAD_REQUEST, e.getMessage());
     }
   }
@@ -79,6 +82,7 @@ public class UsersService {
 
       return accessToken;
     } catch (Exception e) {
+      Sentry.captureException(e);
       throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
     }
 
@@ -97,6 +101,7 @@ public class UsersService {
       User user = dao.findUsersById(userId);
       return user;
     } catch (Exception e) {
+      Sentry.captureException(e);
       throw new HttpException(HttpStatus.NOT_FOUND, e.getMessage());
     }
   }
@@ -106,6 +111,7 @@ public class UsersService {
       User user = dao.findUserByEmail(email);
       return user;
     } catch (Exception e) {
+      Sentry.captureException(e);
       throw new HttpException(HttpStatus.NOT_FOUND, e.getMessage());
     }
   }
