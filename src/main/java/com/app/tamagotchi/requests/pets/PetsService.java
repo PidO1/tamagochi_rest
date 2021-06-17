@@ -5,7 +5,7 @@ import com.app.tamagotchi.requests.users.User;
 import com.app.tamagotchi.response.HttpException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import com.app.tamagotchi.requests.users.UsersService;
+import com.app.tamagotchi.requests.users.UsersDAO;
 
 import javax.inject.Inject;
 import java.util.Date;
@@ -22,7 +22,7 @@ public class PetsService
   private PetsDAO dao;
 
   @Inject
-  private UsersService usersService;
+  private UsersDAO usersDao;
 
   public List<Pet> getAllPets() throws HttpException
   {
@@ -45,8 +45,8 @@ public class PetsService
     catch (Exception e) { throw new HttpException(HttpStatus.BAD_REQUEST, "Not a valid pet"); }
     if (pet.getName() == null) throw new HttpException(HttpStatus.BAD_REQUEST, "Give the poor pet a name");
     if (pet.getOwnerId() == null) throw new HttpException(HttpStatus.BAD_REQUEST, "A pet must have an owner");
-    try { usersService.findUserById(pet.getOwnerId()); }
-    catch (Exception e) { throw new HttpException(HttpStatus.BAD_REQUEST, "User with id "+ pet.getOwnerId() +" does not exist"); }
+    try { if (usersDao.findUserById(pet.getOwnerId()) == null) throw new HttpException(HttpStatus.BAD_REQUEST, "User with id "+ pet.getOwnerId() +" does not exist"); }
+    catch (HttpException e) { throw new HttpException(e.getHttpStatus(), e.getErrorMessage()); }
 
     pet.setDeleted(false);
     if (pet.getHat() != null || pet.getShirt() != null || pet.getPants() != null || pet.getShoes() != null) pet.setLastDressed(new Date());
@@ -64,8 +64,8 @@ public class PetsService
     catch (Exception e) { throw new HttpException(HttpStatus.BAD_REQUEST, e.getMessage()); }
     if (changedPet.getName() == null) throw new HttpException(HttpStatus.BAD_REQUEST, "Give the poor pet a name");
     if (changedPet.getOwnerId() == null) throw new HttpException(HttpStatus.BAD_REQUEST, "A pet must have an owner");
-    try { usersService.findUserById(changedPet.getOwnerId()); }
-    catch (Exception e) { throw new HttpException(HttpStatus.BAD_REQUEST, "User with id "+ changedPet.getOwnerId() +" does not exist"); }
+    try { if (usersDao.findUserById(pet.getOwnerId()) == null) throw new HttpException(HttpStatus.BAD_REQUEST, "User with id "+ pet.getOwnerId() +" does not exist"); }
+    catch (HttpException e) { throw new HttpException(e.getHttpStatus(), e.getErrorMessage()); }
 
     changedPet.setId(petId);
     changedPet.setDeleted(false);
@@ -93,10 +93,10 @@ public class PetsService
     {
       try
       { 
-        usersService.findUserById(updatedPet.getOwnerId());
+        if (usersDao.findUserById(updatedPet.getOwnerId()) == null) throw new HttpException(HttpStatus.BAD_REQUEST, "User with id "+ updatedPet.getOwnerId() +" does not exist");
         pet.setOwnerId(updatedPet.getOwnerId());
       }
-      catch (Exception e) { throw new HttpException(HttpStatus.BAD_REQUEST, "User with id "+ updatedPet.getOwnerId() +" does not exist"); }
+      catch (HttpException e) { throw new HttpException(e.getHttpStatus(), e.getErrorMessage()); }
     }
 
     updatedPet = dao.saveAndFlush(pet);

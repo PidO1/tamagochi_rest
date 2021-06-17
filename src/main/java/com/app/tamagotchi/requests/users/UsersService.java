@@ -81,7 +81,7 @@ public class UsersService {
 
   public User findUserById(Long userId) throws HttpException {
     try {
-      User user = dao.findUsersById(userId);
+      User user = dao.findUserById(userId);
       return user;
     } catch (Exception e) {
       Sentry.captureException(e);

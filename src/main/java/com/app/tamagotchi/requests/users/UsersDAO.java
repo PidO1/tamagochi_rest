@@ -16,7 +16,7 @@ public interface UsersDAO extends JpaRepository<User, Long> {
   @Query("UPDATE User SET firstName = :firstName, lastName = :lastName, email = :email WHERE id = :id")
   void updateUser(@Param("firstName") String firstName, @Param("lastName") String lastName, @Param("email") String email, @Param("id")Long id);
 
-  User findUsersById(Long id);
+  User findUserById(Long id);
 
   User findUserByEmail(String email);
 }
