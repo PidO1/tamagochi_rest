@@ -24,4 +24,10 @@ public class AuthUser {
     this.given_name = given_name;
     this.family_name = family_name;
   }
+
+  public AuthUser(String connection, String given_name, String family_name) {
+    this.connection = connection;
+    this.given_name = given_name;
+    this.family_name = family_name;
+  }
 }
