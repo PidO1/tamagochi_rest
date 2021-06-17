@@ -10,7 +10,7 @@ import com.app.tamagotchi.utils.Constants;
 import com.google.gson.Gson;
 import okhttp3.*;
 import org.springframework.http.HttpStatus;
-
+import io.sentry.Sentry;
 import javax.inject.Inject;
 
 
@@ -80,6 +80,7 @@ public class AuthController {
         throw new Exception();
       }
     } catch (Exception e) {
+      Sentry.captureException(e);
       throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage() == null ? "Could not verify JWT token integrity!" : e.getMessage(), e);
     }
   }

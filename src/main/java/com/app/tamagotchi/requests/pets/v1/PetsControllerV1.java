@@ -19,7 +19,6 @@ import io.sentry.Sentry;
 
 import javax.inject.Inject;
 import java.util.List;
-import java.lang.Exception;
 
 
 @RestController

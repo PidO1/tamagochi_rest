@@ -94,10 +94,10 @@
         </dependency>
 
         <dependency>
-            <groupId>io.sentry</groupId>
-            <artifactId>sentry-spring-boot-starter</artifactId>
-            <version>5.0.1</version>
-        </dependency>
+  <groupId>io.sentry</groupId>
+  <artifactId>sentry-spring</artifactId>
+  <version>4.3.0</version>
+</dependency>
 
     </dependencies>
 
@@ -117,5 +117,12 @@
             </plugin>
         </plugins>
     </build>
+         <distributionManagement>
+    <repository>
+      <id>github</id>
+      <name>GitHub Packages</name>
+      <url>https://maven.pkg.github.com/PidO1/tamagochi_rest</url>
+    </repository>
+  </distributionManagement>
 
 </project>
