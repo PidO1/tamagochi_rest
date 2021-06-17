@@ -95,10 +95,34 @@
 
         <dependency>
             <groupId>io.sentry</groupId>
-            <artifactId>sentry-spring-boot-starter</artifactId>
-            <version>5.0.1</version>
+            <artifactId>sentry-spring</artifactId>
+            <version>4.3.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-boot-starter</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>2.10.5</version>
+        </dependency>
+
+        <dependency>
+    <groupId>com.moesif.servlet</groupId>
+    <artifactId>moesif-servlet</artifactId>
+    <version>1.6.9</version>
+</dependency>
+        
     </dependencies>
 
     <build>
@@ -117,5 +141,12 @@
             </plugin>
         </plugins>
     </build>
+         <distributionManagement>
+    <repository>
+      <id>github</id>
+      <name>GitHub Packages</name>
+      <url>https://maven.pkg.github.com/PidO1/tamagochi_rest</url>
+    </repository>
+  </distributionManagement>
 
 </project>
