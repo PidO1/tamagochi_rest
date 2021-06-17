@@ -24,6 +24,4 @@ public class AuthUser {
     this.given_name = given_name;
     this.family_name = family_name;
   }
-
-
 }

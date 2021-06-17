@@ -1,5 +1,6 @@
 package com.app.tamagotchi.requests.pets.v1;
 
+import com.app.tamagotchi.requests.auth0.AuthController;
 import com.app.tamagotchi.interfaces.Secured;
 import com.app.tamagotchi.requests.pets.Pet;
 import com.app.tamagotchi.requests.pets.PetsService;
@@ -10,6 +11,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.app.tamagotchi.utils.GenericUtility;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import io.sentry.Sentry;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -24,20 +29,20 @@ import io.swagger.annotations.ApiResponse;
 @RequestMapping("tamagotchi/v1/pets")
 @Slf4j
 @Api(tags = "Pets", description = "These endpoints are used to manage the Pet's details.")
-public class PetsControllerV1 {
+public class PetsControllerV1 extends AuthController {
 
   // This class maps all the endpoints for V1 of the Tamagotchi Pets to the
   // PetService
 
   @Inject
   private PetsService petService;
-  private final String JSONObject = MediaType.APPLICATION_JSON_VALUE;
 
-  @GetMapping(value = "/", produces = JSONObject)
+  @GetMapping(value = "/")
   @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
   @ApiOperation(value = "Retrieves all pets")
   public ResponseEntity getAllPets() {
     try {
+      verifyToken(GenericUtility.getToken(RequestContextHolder.getRequestAttributes()));
       List<Pet> pets = petService.getAllPets();
       return ControllerUtils.responseOf(HttpStatus.OK, pets, "Pets found");
     } catch (HttpException e) {
@@ -47,11 +52,12 @@ public class PetsControllerV1 {
     }
   }
 
-  @GetMapping(value = "/{id}", produces = JSONObject)
+  @GetMapping(value = "/{id}")
   @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
   @ApiOperation(value = "Retrieves a pet based on the given Id")
   public ResponseEntity getPetById(@PathVariable(name = "id", required = true) Long petId) {
     try {
+      verifyToken(GenericUtility.getToken(RequestContextHolder.getRequestAttributes()));
       Pet pet = petService.getPetById(petId);
       return ControllerUtils.responseOf(HttpStatus.OK, pet, "Pet " + petId.toString() + " found");
     } catch (HttpException e) {
@@ -61,11 +67,12 @@ public class PetsControllerV1 {
     }
   }
 
-  @PostMapping(value = "/", consumes = JSONObject, produces = JSONObject)
+  @PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
   @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
   @ApiOperation(value = "Creates a pet")
   public ResponseEntity createPet(@RequestBody Pet pet) {
     try {
+      verifyToken(GenericUtility.getToken(RequestContextHolder.getRequestAttributes()));
       Pet createdPet = petService.createPet(pet);
       return ControllerUtils.responseOf(HttpStatus.CREATED, createdPet,
           "Pet " + createdPet.getId().toString() + " created");
@@ -76,11 +83,12 @@ public class PetsControllerV1 {
     }
   }
 
-  @PutMapping(value = "/{id}", consumes = JSONObject, produces = JSONObject)
+  @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
   @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
   @ApiOperation(value = "Changes a pet based on the given Id")
   public ResponseEntity changePetById(@PathVariable(name = "id", required = true) Long petId, @RequestBody Pet pet) {
     try {
+      verifyToken(GenericUtility.getToken(RequestContextHolder.getRequestAttributes()));
       Pet changedPet = petService.changePetById(petId, pet);
       return ControllerUtils.responseOf(HttpStatus.OK, changedPet, "Pet " + petId.toString() + " changed");
     } catch (HttpException e) {
@@ -90,13 +98,56 @@ public class PetsControllerV1 {
     }
   }
 
-  @DeleteMapping(value = "/{id}", produces = JSONObject)
+  @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+  @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
+  public ResponseEntity updatePetById(@PathVariable(name = "id", required = true) Long petId, @RequestBody Pet pet) {
+    try {
+      verifyToken(GenericUtility.getToken(RequestContextHolder.getRequestAttributes()));
+      Pet changedPet = petService.updatePetById(petId, pet);
+      return ControllerUtils.responseOf(HttpStatus.OK, changedPet, "Pet " + petId.toString() + " updated");
+    } catch (HttpException e) {
+      Sentry.captureException(e);
+      log.error(e.getErrorMessage());
+      return ControllerUtils.responseOf(e.getHttpStatus(), e.getErrorMessage());
+    }
+  }
+
+  @DeleteMapping(value = "/{id}")
   @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
   @ApiOperation(value = "Deletes a pet based on the given Id")
   public ResponseEntity changePetById(@PathVariable(name = "id", required = true) Long petId) {
     try {
+      verifyToken(GenericUtility.getToken(RequestContextHolder.getRequestAttributes()));
       petService.deletePetById(petId);
       return ControllerUtils.responseOf(HttpStatus.OK, "Pet " + petId.toString() + " deleted");
+    } catch (HttpException e) {
+      Sentry.captureException(e);
+      log.error(e.getErrorMessage());
+      return ControllerUtils.responseOf(e.getHttpStatus(), e.getErrorMessage());
+    }
+  }
+
+  @PutMapping(value = "/{id}/play")
+  @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
+  public ResponseEntity playWithPetById(@PathVariable(name = "id", required = true) Long petId) {
+    try {
+      verifyToken(GenericUtility.getToken(RequestContextHolder.getRequestAttributes()));
+      petService.playWithPetById(petId);
+      return ControllerUtils.responseOf(HttpStatus.OK, "Played with Pet " + petId.toString());
+    } catch (HttpException e) {
+      Sentry.captureException(e);
+      log.error(e.getErrorMessage());
+      return ControllerUtils.responseOf(e.getHttpStatus(), e.getErrorMessage());
+    }
+  }
+
+  @PutMapping(value = "/{id}/feed")
+  @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
+  public ResponseEntity feedPetById(@PathVariable(name = "id", required = true) Long petId) {
+    try {
+      verifyToken(GenericUtility.getToken(RequestContextHolder.getRequestAttributes()));
+      petService.feedPetById(petId);
+      return ControllerUtils.responseOf(HttpStatus.OK, "Fed Pet " + petId.toString());
     } catch (HttpException e) {
       Sentry.captureException(e);
       log.error(e.getErrorMessage());

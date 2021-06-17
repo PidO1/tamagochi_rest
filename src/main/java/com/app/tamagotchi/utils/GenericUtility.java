@@ -3,6 +3,9 @@ package com.app.tamagotchi.utils;
 
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.*;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -27,8 +30,8 @@ public class GenericUtility {
   public static final SimpleDateFormat sdfTimestamp = new SimpleDateFormat("yyyyMMddhhmmssSSSS");
   private static final String decimalPattern = "-?([0-9]*)\\.([0-9]*)";
 
-  public static Date getSynchronisedDate() {
-    return new Date();
+  public static String getToken(RequestAttributes requestAttributes) {
+   return ((ServletRequestAttributes) requestAttributes).getRequest().getHeader("Authorization");
   }
 
   public static String removeListChar(String s) {

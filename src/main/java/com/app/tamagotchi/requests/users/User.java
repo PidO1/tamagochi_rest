@@ -18,10 +18,12 @@ public class User {
   @Column(name = "id")
   private Long id;
 
+  @JsonProperty("first_name")
   @Column(name = "first_name")
   @JsonProperty("first_name")
   private String firstName;
 
+  @JsonProperty("last_name")
   @Column(name = "last_name")
   @JsonProperty("last_name")
   private String lastName;
@@ -37,5 +39,4 @@ public class User {
   @Transient
   @JsonProperty("access_token")
   private String accessToken;
-
 }
