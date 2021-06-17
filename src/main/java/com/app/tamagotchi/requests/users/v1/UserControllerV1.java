@@ -4,7 +4,6 @@ package com.app.tamagotchi.requests.users.v1;
 import com.app.tamagotchi.enums.NextStep;
 import com.app.tamagotchi.interfaces.Secured;
 import com.app.tamagotchi.model.AccessToken;
-import com.app.tamagotchi.model.UserProfile;
 import com.app.tamagotchi.requests.auth0.AuthController;
 import com.app.tamagotchi.requests.users.User;
 import com.app.tamagotchi.requests.users.UsersService;
@@ -18,11 +17,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.inject.Inject;
 import java.util.List;
-import java.lang.Exception;
 
 @RestController
 @RequestMapping("tamagotchi/v1/users")
@@ -67,12 +64,13 @@ public class UserControllerV1 extends AuthController {
   }
 
   //UPDATE
-  @PutMapping(value = "/", consumes = Constants.JSON_VALUE, produces = Constants.JSON_VALUE)
+  @PatchMapping(value = "/", consumes = Constants.JSON_VALUE, produces = Constants.JSON_VALUE)
   @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
   public ResponseEntity updateUser(@RequestBody User user) {
     try {
-      verifyToken(GenericUtility.getToken(RequestContextHolder.getRequestAttributes()));
-      User updatedUser = usersService.updateUser(user);
+      String token = GenericUtility.getToken(RequestContextHolder.getRequestAttributes());
+      verifyToken(token);
+      User updatedUser = usersService.updateUser(user, token);
       return ControllerUtils.responseOf(HttpStatus.OK, updatedUser, "User updated!");
     } catch (HttpException e) {
       log.error(e.getErrorMessage(), e);

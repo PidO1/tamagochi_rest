@@ -7,6 +7,9 @@ import com.app.tamagotchi.requests.users.User;
 import com.app.tamagotchi.requests.users.UsersDAO;
 import com.app.tamagotchi.response.HttpException;
 import com.app.tamagotchi.utils.Constants;
+import com.app.tamagotchi.utils.GenericUtility;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
 import okhttp3.*;
 import org.springframework.http.HttpStatus;
@@ -25,13 +28,12 @@ public class AuthController {
     return authController;
   }
 
-  public Response signUp(User user) throws Exception {
-
+  public void signUp(AuthUser authUser) throws Exception {
     OkHttpClient client = new OkHttpClient().newBuilder()
             .build();
     MediaType mediaType = MediaType.parse(Constants.JSON_VALUE);
 
-    AuthUser authUser = new AuthUser(Constants.CLIENT_ID, user.getEmail(), user.getPassword(), Constants.CONNTECTION, user.getFirstName(), user.getLastName());
+
     RequestBody body = RequestBody.create(mediaType, new Gson().toJson(authUser));
     Request request = new Request.Builder()
             .url(Constants.URL + "dbconnections/signup")
@@ -41,24 +43,42 @@ public class AuthController {
 
     Response response = client.newCall(request).execute();
     if (checkResponseCode(response)) throw new HttpException(HttpStatus.valueOf(response.code()), response.message());
-    return response;
   }
 
-  public AccessToken authLogin(User user) throws Exception {
+  public void updateAuth0User(AuthUser authUser, UserProfile userProfile, AccessToken accessToken, String element) throws Exception {
+    OkHttpClient client = new OkHttpClient().newBuilder()
+            .build();
+    MediaType mediaType = MediaType.parse(Constants.JSON_VALUE);
+    String json = GenericUtility.stripJsonElement(authUser, element);
+    RequestBody body = RequestBody.create(mediaType, json);
+    Request request = new Request.Builder()
+            .url(Constants.URL + "api/v2/users/" + userProfile.getSub())
+            .method("PATCH", body)
+            .addHeader("Authorization", "Bearer " + accessToken.getAccessToken())
+            .addHeader("Content-Type", Constants.JSON_VALUE)
+            .build();
+    Response response = client.newCall(request).execute();
+    if (checkResponseCode(response)) throw new HttpException(HttpStatus.valueOf(response.code()), response.message());
+  }
 
+  public AccessToken genToken(User user, boolean adminToken) throws Exception {
+    try {
     OkHttpClient client = new OkHttpClient().newBuilder()
             .build();
     MediaType mediaType = MediaType.parse(Constants.URLENCODED_VALUE);
-    RequestBody body = RequestBody.create(mediaType, Constants.loginBuilder(user));
+    RequestBody body = RequestBody.create(mediaType, Constants.loginBuilder(user, adminToken));
     Request request = new Request.Builder()
             .url(Constants.URL + "oauth/token")
             .method("POST", body)
             .addHeader("Content-Type", Constants.URLENCODED_VALUE)
             .build();
     Response response = client.newCall(request).execute();
-    if (checkResponseCode(response)) throw new Exception(response.message());
+    if (checkResponseCode(response)) throw new HttpException(HttpStatus.valueOf(response.code()), response.message());
     AccessToken accessToken = new Gson().fromJson(response.body().string(), AccessToken.class);
     return accessToken;
+    } catch (HttpException e) {
+      throw new HttpException(e.getHttpStatus(), e.getMessage());
+    }
   }
 
   public UserProfile findUsersProfile(String token) throws HttpException {
@@ -80,11 +100,11 @@ public class AuthController {
         throw new Exception();
       }
     } catch (Exception e) {
-      throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage() == null ? "Could not verify JWT token integrity!" : e.getMessage(), e);
+      throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage() == null ? "Could not verify JWT token integrity!" : e.getMessage());
     }
   }
 
-  public boolean checkResponseCode(Response response) throws Exception {
+  public boolean checkResponseCode(Response response) {
     if (response.code() >= 400) return true;
     else return false;
   }
@@ -100,4 +120,6 @@ public class AuthController {
       throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage() == null ? "Could not verify JWT token integrity!" : e.getMessage(), e);
     }
   }
+
+
 }
