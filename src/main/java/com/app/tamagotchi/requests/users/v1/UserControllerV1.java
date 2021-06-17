@@ -2,7 +2,6 @@ package com.app.tamagotchi.requests.users.v1;
 
 
 import com.app.tamagotchi.enums.NextStep;
-import com.app.tamagotchi.interfaces.Secured;
 import com.app.tamagotchi.model.AccessToken;
 import com.app.tamagotchi.requests.auth0.AuthController;
 import com.app.tamagotchi.requests.users.User;
@@ -25,6 +24,7 @@ import java.util.List;
 @RestController
 @RequestMapping("tamagotchi/v1/users")
 @Slf4j
+@Api(tags = "Users", description = "These endpoints are used to manage the users.")
 public class UserControllerV1 extends AuthController {
 
   @Inject
@@ -64,7 +64,7 @@ public class UserControllerV1 extends AuthController {
 
   //UPDATE
   @PatchMapping(value = "/", consumes = Constants.JSON_VALUE, produces = Constants.JSON_VALUE)
-  @ApiOperation( value = "Update User information")
+  @ApiOperation(value = "Update User information")
   public ResponseEntity updateUser(@RequestBody User user) {
     try {
       String token = GenericUtility.getToken(RequestContextHolder.getRequestAttributes());
@@ -96,7 +96,6 @@ public class UserControllerV1 extends AuthController {
   //USER BY EMAILS
   @GetMapping(value = "/{email}", consumes = Constants.JSON_VALUE, produces = Constants.JSON_VALUE)
   @ApiOperation(value = "Provides a user by a given email")
-
   public ResponseEntity findUserById(@PathVariable(name = "email", required = true) String email) {
     try {
       verifyToken(GenericUtility.getToken(RequestContextHolder.getRequestAttributes()));
