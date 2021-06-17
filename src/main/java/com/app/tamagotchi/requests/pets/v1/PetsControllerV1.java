@@ -1,6 +1,5 @@
 package com.app.tamagotchi.requests.pets.v1;
 
-
 import com.app.tamagotchi.interfaces.Secured;
 import com.app.tamagotchi.requests.pets.Pet;
 import com.app.tamagotchi.requests.pets.PetsService;
@@ -15,15 +14,17 @@ import org.springframework.web.bind.annotation.*;
 import javax.inject.Inject;
 import java.util.List;
 import io.sentry.Sentry;
-
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping("tamagotchi/v1/pets")
 @Slf4j
-public class PetsControllerV1 
-{
+@Api(tags = "Pets", description = "These endpoints are used to manage the Pet's details.")
+public class PetsControllerV1 {
 
-  // This class maps all the endpoints for V1 of the Tamagotchi Pets to the PetService
+  // This class maps all the endpoints for V1 of the Tamagotchi Pets to the
+  // PetService
 
   @Inject
   private PetsService petService;
@@ -31,15 +32,12 @@ public class PetsControllerV1
 
   @GetMapping(value = "/", produces = JSONObject)
   @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
-  public ResponseEntity getAllPets() 
-  {
-    try 
-    {
+  @ApiOperation(value = "Retrieves all pets")
+  public ResponseEntity getAllPets() {
+    try {
       List<Pet> pets = petService.getAllPets();
       return ControllerUtils.responseOf(HttpStatus.OK, pets, "Pets found");
-    } 
-    catch (HttpException e)
-    {
+    } catch (HttpException e) {
       Sentry.captureException(e);
       log.error(e.getErrorMessage());
       return ControllerUtils.responseOf(e.getHttpStatus(), e.getErrorMessage());
@@ -48,15 +46,12 @@ public class PetsControllerV1
 
   @GetMapping(value = "/{id}", produces = JSONObject)
   @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
-  public ResponseEntity getPetById(@PathVariable(name = "id", required = true) Long petId) 
-  {
-    try 
-    {
+  @ApiOperation(value = "Retrieves a pet based on the given Id")
+  public ResponseEntity getPetById(@PathVariable(name = "id", required = true) Long petId) {
+    try {
       Pet pet = petService.getPetById(petId);
       return ControllerUtils.responseOf(HttpStatus.OK, pet, "Pet " + petId.toString() + " found");
-    } 
-    catch (HttpException e)
-    {
+    } catch (HttpException e) {
       Sentry.captureException(e);
       log.error(e.getErrorMessage());
       return ControllerUtils.responseOf(e.getHttpStatus(), e.getErrorMessage());
@@ -65,15 +60,13 @@ public class PetsControllerV1
 
   @PostMapping(value = "/", consumes = JSONObject, produces = JSONObject)
   @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
-  public ResponseEntity createPet(@RequestBody Pet pet)
-  {
-    try 
-    {
+  @ApiOperation(value = "Creates a pet")
+  public ResponseEntity createPet(@RequestBody Pet pet) {
+    try {
       Pet createdPet = petService.createPet(pet);
-      return ControllerUtils.responseOf(HttpStatus.CREATED, createdPet, "Pet " + createdPet.getId().toString() + " created");
-    }
-    catch (HttpException e)
-    {
+      return ControllerUtils.responseOf(HttpStatus.CREATED, createdPet,
+          "Pet " + createdPet.getId().toString() + " created");
+    } catch (HttpException e) {
       Sentry.captureException(e);
       log.error(e.getErrorMessage());
       return ControllerUtils.responseOf(e.getHttpStatus(), e.getErrorMessage());
@@ -82,15 +75,12 @@ public class PetsControllerV1
 
   @PutMapping(value = "/{id}", consumes = JSONObject, produces = JSONObject)
   @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
-  public ResponseEntity changePetById(@PathVariable(name = "id", required = true) Long petId, @RequestBody Pet pet) 
-  {
-    try 
-    {
+  @ApiOperation(value = "Changes a pet based on the given Id")
+  public ResponseEntity changePetById(@PathVariable(name = "id", required = true) Long petId, @RequestBody Pet pet) {
+    try {
       Pet changedPet = petService.changePetById(petId, pet);
       return ControllerUtils.responseOf(HttpStatus.OK, changedPet, "Pet " + petId.toString() + " changed");
-    } 
-    catch (HttpException e)
-    {
+    } catch (HttpException e) {
       Sentry.captureException(e);
       log.error(e.getErrorMessage());
       return ControllerUtils.responseOf(e.getHttpStatus(), e.getErrorMessage());
@@ -99,15 +89,12 @@ public class PetsControllerV1
 
   @DeleteMapping(value = "/{id}", produces = JSONObject)
   @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
-  public ResponseEntity changePetById(@PathVariable(name = "id", required = true) Long petId) 
-  {
-    try 
-    {
+  @ApiOperation(value = "Deletes a pet based on the given Id")
+  public ResponseEntity changePetById(@PathVariable(name = "id", required = true) Long petId) {
+    try {
       petService.deletePetById(petId);
       return ControllerUtils.responseOf(HttpStatus.OK, "Pet " + petId.toString() + " deleted");
-    } 
-    catch (HttpException e)
-    {
+    } catch (HttpException e) {
       Sentry.captureException(e);
       log.error(e.getErrorMessage());
       return ControllerUtils.responseOf(e.getHttpStatus(), e.getErrorMessage());
