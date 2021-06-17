@@ -85,7 +85,7 @@ public class PetsControllerV1 extends AuthController {
 
   @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
   @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
-  @ApiOperation(value = "Changes a pet based on the given Id")
+  @ApiOperation(value = "Changes a pet based on the provided Id")
   public ResponseEntity changePetById(@PathVariable(name = "id", required = true) Long petId, @RequestBody Pet pet) {
     try {
       verifyToken(GenericUtility.getToken(RequestContextHolder.getRequestAttributes()));
@@ -100,6 +100,7 @@ public class PetsControllerV1 extends AuthController {
 
   @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
   @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
+  @ApiOperation(value = "Updates a pet based on the provided id")
   public ResponseEntity updatePetById(@PathVariable(name = "id", required = true) Long petId, @RequestBody Pet pet) {
     try {
       verifyToken(GenericUtility.getToken(RequestContextHolder.getRequestAttributes()));
@@ -129,6 +130,7 @@ public class PetsControllerV1 extends AuthController {
 
   @PutMapping(value = "/{id}/play")
   @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
+  @ApiOperation(value = "Plays with a pet with the provided id")
   public ResponseEntity playWithPetById(@PathVariable(name = "id", required = true) Long petId) {
     try {
       verifyToken(GenericUtility.getToken(RequestContextHolder.getRequestAttributes()));
@@ -143,6 +145,7 @@ public class PetsControllerV1 extends AuthController {
 
   @PutMapping(value = "/{id}/feed")
   @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
+  @ApiOperation(value = "Feeds the pet with the provided id")
   public ResponseEntity feedPetById(@PathVariable(name = "id", required = true) Long petId) {
     try {
       verifyToken(GenericUtility.getToken(RequestContextHolder.getRequestAttributes()));

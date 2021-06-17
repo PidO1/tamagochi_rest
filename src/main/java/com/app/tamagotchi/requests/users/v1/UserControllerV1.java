@@ -39,6 +39,7 @@ public class UserControllerV1 extends AuthController {
 
   @GetMapping(path = "/HelloWorld")
   @Secured(secureStatus = Secured.SecureStatus.PUBLIC)
+  @ApiOperation(value = "Hello World endpoint")
   public ResponseEntity helloWorld() {
     return ControllerUtils.responseOf(HttpStatus.OK, "Hello World!");
   }
