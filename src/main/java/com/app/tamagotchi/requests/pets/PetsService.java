@@ -1,6 +1,7 @@
 package com.app.tamagotchi.requests.pets;
 
 
+import com.app.tamagotchi.requests.users.User;
 import com.app.tamagotchi.response.HttpException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -40,10 +41,14 @@ public class PetsService
 
   public Pet createPet(Pet pet) throws HttpException
   {
+    User user;
     try { pet = Pet.validatePet(pet); }
-    catch (Exception e) { throw new HttpException(HttpStatus.BAD_REQUEST, e.getMessage()); }
+    catch (Exception e) { throw new HttpException(HttpStatus.BAD_REQUEST, "Not a valid pet"); }
     if (pet.getName() == null) throw new HttpException(HttpStatus.BAD_REQUEST, "Give the poor pet a name");
-    pet.setOwner(usersService.findUserById(pet.getOwnerId()));
+    try {
+      user = usersService.findUserById(pet.getOwnerId());
+    }catch (Exception e) { throw new HttpException(HttpStatus.BAD_REQUEST, "User with id "+ pet.getOwnerId() +" does not exist"); }
+    pet.setOwner(user);
     pet.setDeleted(false);
     if (pet.getHat() != null || pet.getShirt() != null || pet.getPants() != null || pet.getShoes() != null) pet.setLastDressed(new Date());
     Pet createdPet = dao.saveAndFlush(pet);
