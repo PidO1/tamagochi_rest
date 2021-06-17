@@ -1,8 +1,10 @@
 package com.app.tamagotchi.requests.users;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -16,6 +18,7 @@ public class User {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id")
+  @ApiModelProperty(hidden = true)
   private Long id;
 
   @JsonProperty("first_name")
@@ -36,5 +39,6 @@ public class User {
 
   @Transient
   @JsonProperty("access_token")
+  @ApiModelProperty(hidden = true)
   private String accessToken;
 }
