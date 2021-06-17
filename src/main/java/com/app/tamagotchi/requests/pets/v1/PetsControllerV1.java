@@ -175,4 +175,22 @@ public class PetsControllerV1 extends AuthController
       return ControllerUtils.responseOf(e.getHttpStatus(), e.getErrorMessage());
     }
   }
+
+  @GetMapping(value = "/owner/{id}")
+  @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
+  public ResponseEntity getPetsByOwnerId(@PathVariable(name = "id", required = true) Long ownerId)
+  {
+    try
+    {
+      verifyToken(GenericUtility.getToken(RequestContextHolder.getRequestAttributes()));
+      List<Pet> pets = petService.getPetsByOwnerId(ownerId);
+      return ControllerUtils.responseOf(HttpStatus.OK, pets, "Pets for owner " + ownerId.toString() + " found");
+    }
+    catch (HttpException e)
+    {
+      Sentry.captureException(e);
+      log.error(e.getErrorMessage());
+      return ControllerUtils.responseOf(e.getHttpStatus(), e.getErrorMessage());
+    }
+  }
 }

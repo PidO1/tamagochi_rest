@@ -1,6 +1,7 @@
 package com.app.tamagotchi.requests.pets;
 
 
+import com.app.tamagotchi.requests.users.User;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -20,6 +21,10 @@ public class Pet
   @GeneratedValue(strategy = GenerationType.IDENTITY)  // Auto-generates IDs when an object is created
   @Column(name = "id")
   private Long id;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "user.id")
+  private User owner;
 
   @Column(name = "deleted")
   @JsonIgnore
@@ -57,6 +62,7 @@ public class Pet
     if (pet.getLastFed() != null) pet.setLastFed(null);
     if (pet.getLastPlayed() != null) pet.setLastPlayed(null);
     if (pet.getLastDressed() != null) pet.setLastDressed(null);
+    if (pet.getOwner() != null) pet.setOwner(null);
 
     Boolean valid = false;
     if (pet.getName() != null) valid = true;

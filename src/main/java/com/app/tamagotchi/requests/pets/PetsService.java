@@ -113,4 +113,12 @@ public class PetsService
     pet = dao.saveAndFlush(pet);
     if (pet == null) throw new HttpException(HttpStatus.INTERNAL_SERVER_ERROR, "Pet " + petId.toString() + " could not be changed");
   }
+
+  public List<Pet> getPetsByOwnerId(Long ownerId) throws HttpException
+  {
+    List<Pet> pets = dao.findAll();
+    pets.removeIf(elem -> elem.getDeleted() || elem.getOwner().getId() != ownerId);
+    if (pets.size() == 0) throw new HttpException(HttpStatus.NOT_FOUND, "No pets found");
+    return pets;
+  }
 }
