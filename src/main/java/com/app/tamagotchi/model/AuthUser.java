@@ -11,6 +11,7 @@ public class AuthUser {
   private String connection;
   private String given_name;
   private String family_name;
+  private String name;
 
   public AuthUser() {
     super();
@@ -23,5 +24,14 @@ public class AuthUser {
     this.connection = connection;
     this.given_name = given_name;
     this.family_name = family_name;
+    this.name = given_name + " " + family_name;
+  }
+
+  public AuthUser(String client_id, String connection, String given_name, String family_name) {
+    this.client_id = client_id;
+    this.connection = connection;
+    this.given_name = given_name;
+    this.family_name = family_name;
+    this.name = given_name + " " + family_name;
   }
 }

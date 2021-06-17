@@ -30,8 +30,4 @@ public class User {
   @Transient
   @JsonProperty("password")
   private String password;
-
-  @Transient
-  @JsonProperty("access_token")
-  private String accessToken;
 }

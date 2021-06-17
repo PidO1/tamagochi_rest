@@ -1,6 +1,10 @@
 package com.app.tamagotchi.utils;
 
 
+import com.app.tamagotchi.model.AuthUser;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.gson.Gson;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.*;
 import org.springframework.web.context.request.RequestAttributes;
@@ -32,6 +36,20 @@ public class GenericUtility {
 
   public static String getToken(RequestAttributes requestAttributes) {
    return ((ServletRequestAttributes) requestAttributes).getRequest().getHeader("Authorization");
+  }
+
+  public static String stripJsonElement(AuthUser authUser, String element){
+    String json = new Gson().toJson(authUser);
+    try {
+    ObjectMapper mapper = new ObjectMapper();
+    ObjectNode node = (ObjectNode) mapper.readTree(json);
+    node.remove(element);
+    json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(node);
+
+    } catch (Exception e) {
+      log.error(e.getMessage());
+    }
+    return json;
   }
 
   public static String removeListChar(String s) {
