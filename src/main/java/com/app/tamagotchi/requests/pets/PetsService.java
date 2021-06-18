@@ -45,7 +45,11 @@ public class PetsService
     catch (Exception e) { throw new HttpException(HttpStatus.BAD_REQUEST, "Not a valid pet"); }
     if (pet.getName() == null) throw new HttpException(HttpStatus.BAD_REQUEST, "Give the poor pet a name");
     if (pet.getOwnerId() == null) throw new HttpException(HttpStatus.BAD_REQUEST, "A pet must have an owner");
-    try { if (usersDao.findUserById(pet.getOwnerId()) == null) throw new HttpException(HttpStatus.BAD_REQUEST, "User with id "+ pet.getOwnerId() +" does not exist"); }
+    try
+    { 
+      User user = usersDao.findUserById(pet.getOwnerId());
+      if (user == null) throw new HttpException(HttpStatus.BAD_REQUEST, "User with id "+ pet.getOwnerId() +" does not exist");
+    }
     catch (HttpException e) { throw new HttpException(e.getHttpStatus(), e.getErrorMessage()); }
 
     pet.setDeleted(false);
@@ -64,7 +68,11 @@ public class PetsService
     catch (Exception e) { throw new HttpException(HttpStatus.BAD_REQUEST, e.getMessage()); }
     if (changedPet.getName() == null) throw new HttpException(HttpStatus.BAD_REQUEST, "Give the poor pet a name");
     if (changedPet.getOwnerId() == null) throw new HttpException(HttpStatus.BAD_REQUEST, "A pet must have an owner");
-    try { if (usersDao.findUserById(pet.getOwnerId()) == null) throw new HttpException(HttpStatus.BAD_REQUEST, "User with id "+ pet.getOwnerId() +" does not exist"); }
+    try
+    { 
+      User user = usersDao.findUserById(changedPet.getOwnerId());
+      if (user == null) throw new HttpException(HttpStatus.BAD_REQUEST, "User with id "+ changedPet.getOwnerId() +" does not exist");
+    }
     catch (HttpException e) { throw new HttpException(e.getHttpStatus(), e.getErrorMessage()); }
 
     changedPet.setId(petId);
@@ -93,7 +101,8 @@ public class PetsService
     {
       try
       { 
-        if (usersDao.findUserById(updatedPet.getOwnerId()) == null) throw new HttpException(HttpStatus.BAD_REQUEST, "User with id "+ updatedPet.getOwnerId() +" does not exist");
+        User user = usersDao.findUserById(updatedPet.getOwnerId());
+        if (user == null) throw new HttpException(HttpStatus.BAD_REQUEST, "User with id "+ updatedPet.getOwnerId() +" does not exist");
         pet.setOwnerId(updatedPet.getOwnerId());
       }
       catch (HttpException e) { throw new HttpException(e.getHttpStatus(), e.getErrorMessage()); }
