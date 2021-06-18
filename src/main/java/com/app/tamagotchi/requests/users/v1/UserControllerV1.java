@@ -2,7 +2,6 @@ package com.app.tamagotchi.requests.users.v1;
 
 
 import com.app.tamagotchi.enums.NextStep;
-import com.app.tamagotchi.interfaces.Secured;
 import com.app.tamagotchi.model.AccessToken;
 import com.app.tamagotchi.requests.auth0.AuthController;
 import com.app.tamagotchi.requests.users.User;
