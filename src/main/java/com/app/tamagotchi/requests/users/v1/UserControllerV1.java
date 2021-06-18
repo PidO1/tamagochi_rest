@@ -115,7 +115,7 @@ public class UserControllerV1 extends AuthController {
 
   //USER BY ID
   @GetMapping(value = "/id/{id}", consumes = Constants.JSON_VALUE, produces = Constants.JSON_VALUE)
-  @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
+  @ApiOperation(value = "Provides a user by a given id")
   public ResponseEntity findUserById(@PathVariable(name = "id", required = true) long id) {
     try {
       verifyToken(GenericUtility.getToken(RequestContextHolder.getRequestAttributes()));
@@ -131,7 +131,7 @@ public class UserControllerV1 extends AuthController {
 
   //PETS BY USER
   @GetMapping(value = "/{id}/pets")
-  @Secured(secureStatus = Secured.SecureStatus.PRIVATE)
+  @ApiOperation(value = "Provides all bets belonging to a user")
   public ResponseEntity getPetsByOwnerId(@PathVariable(name = "id", required = true) Long ownerId) {
     try {
       verifyToken(GenericUtility.getToken(RequestContextHolder.getRequestAttributes()));
