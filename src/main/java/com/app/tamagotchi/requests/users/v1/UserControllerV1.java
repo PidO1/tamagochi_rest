@@ -5,6 +5,8 @@ import com.app.tamagotchi.enums.NextStep;
 import com.app.tamagotchi.model.AccessToken;
 import com.app.tamagotchi.requests.auth0.AuthController;
 import com.app.tamagotchi.requests.users.User;
+import com.app.tamagotchi.requests.pets.Pet;
+import com.app.tamagotchi.requests.pets.PetsService;
 import com.app.tamagotchi.requests.users.UsersService;
 import com.app.tamagotchi.response.HttpException;
 import com.app.tamagotchi.utils.Constants;
@@ -29,8 +31,9 @@ public class UserControllerV1 extends AuthController {
 
   @Inject
   private UsersService usersService;
-
-   //CREATE
+  @Inject
+  private PetsService petsService;
+  //CREATE
   @PostMapping(value = "/", consumes = Constants.JSON_VALUE, produces = Constants.JSON_VALUE)
   @ApiOperation(
           value = "Creates a user",
@@ -96,7 +99,7 @@ public class UserControllerV1 extends AuthController {
   //USER BY EMAILS
   @GetMapping(value = "/{email}", consumes = Constants.JSON_VALUE, produces = Constants.JSON_VALUE)
   @ApiOperation(value = "Provides a user by a given email")
-  public ResponseEntity findUserById(@PathVariable(name = "email", required = true) String email) {
+  public ResponseEntity findUserByEmail(@PathVariable(name = "email", required = true) String email) {
     try {
       verifyToken(GenericUtility.getToken(RequestContextHolder.getRequestAttributes()));
       User users = usersService.findUserByEmail(email);
@@ -106,6 +109,37 @@ public class UserControllerV1 extends AuthController {
       log.error(e.getErrorMessage(), e);
       Sentry.captureException(e);
       return ControllerUtils.responseOf(e.getHttpStatus(), e.getErrorMessage(), NextStep.REDO.getNextStep());
+    }
+  }
+
+  //USER BY ID
+  @GetMapping(value = "/id/{id}", consumes = Constants.JSON_VALUE, produces = Constants.JSON_VALUE)
+  @ApiOperation(value = "Provides a user by a given id")
+  public ResponseEntity findUserById(@PathVariable(name = "id", required = true) long id) {
+    try {
+      verifyToken(GenericUtility.getToken(RequestContextHolder.getRequestAttributes()));
+      User users = usersService.findUserById(id);
+      if (users == null) throw new HttpException(HttpStatus.NOT_FOUND, "User not found!");
+      return ControllerUtils.responseOf(HttpStatus.OK, users, "User found!");
+    } catch (HttpException e) {
+      log.error(e.getErrorMessage(), e);
+      Sentry.captureException(e);
+      return ControllerUtils.responseOf(e.getHttpStatus(), e.getErrorMessage(), NextStep.REDO.getNextStep());
+    }
+  }
+
+  //PETS BY USER
+  @GetMapping(value = "/{id}/pets")
+  @ApiOperation(value = "Provides all bets belonging to a user")
+  public ResponseEntity getPetsByOwnerId(@PathVariable(name = "id", required = true) Long ownerId) {
+    try {
+      verifyToken(GenericUtility.getToken(RequestContextHolder.getRequestAttributes()));
+      List<Pet> pets = petsService.getPetsByOwnerId(ownerId);
+      return ControllerUtils.responseOf(HttpStatus.OK, pets, "Pets for owner " + ownerId.toString() + " found");
+    } catch (HttpException e) {
+      Sentry.captureException(e);
+      log.error(e.getErrorMessage());
+      return ControllerUtils.responseOf(e.getHttpStatus(), e.getErrorMessage());
     }
   }
 }

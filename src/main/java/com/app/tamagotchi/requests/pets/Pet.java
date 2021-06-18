@@ -55,6 +55,9 @@ public class Pet
   @Column(name = "shoes")
   private String shoes;
 
+  @Column(name = "owner_id")
+  private Long ownerId;
+
   public static Pet validatePet(Pet pet) throws Exception
   {
     if (pet == null) throw new Exception("Invalid pet data provided");
@@ -70,6 +73,7 @@ public class Pet
     if (pet.getShirt() != null) valid = true;
     if (pet.getPants() != null) valid = true;
     if (pet.getShoes() != null) valid = true;
+    if (pet.getOwnerId() != null ) valid = true;
     if (!valid) throw new Exception("Invalid pet data provided");
 
     return pet;
